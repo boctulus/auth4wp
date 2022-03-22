@@ -9,9 +9,10 @@ namespace boctulus\Auth4WP\libs;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-require __DIR__ . '/vendors/PHPMailer/src/Exception.php';
-require __DIR__ . '/vendors/PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/vendors/PHPMailer/src/SMTP.php';
+require_once ABSPATH . 'wp-includes/PHPMailer/Exception.php';
+require_once ABSPATH . 'wp-includes/PHPMailer/PHPMailer.php';
+require_once ABSPATH . 'wp-includes/PHPMailer/SMTP.php';
+
 
 class Mails {
 

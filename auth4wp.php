@@ -3,8 +3,8 @@
 namespace boctulus\Auth4WP;
 
 /*
-Plugin Name: Import quoter cl
-Description: Plugin para cotizar importaciones hacia Chile
+Plugin Name: Auth4WP
+Description: Plugin que provee autenticación alternativa
 Version: 1.0.0
 Author: boctulus@gmail.com <Pablo>
 */
