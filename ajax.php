@@ -2,12 +2,14 @@
 
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Debug.php';
+require_once __DIR__ . '/libs/Auth.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/Key.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/ExpiredException.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/BeforeValidException.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/SignatureInvalidException.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/JWK.php';
 require_once __DIR__ . '/libs/vendors/PHP-JWT/JWT.php';
+
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -63,32 +65,9 @@ function login(WP_REST_Request $req)
             return $error;
         }
 
+        $at = Auth::gen_jwt([], 'access_token'); 
 
-
-        $key = "example_key";
-        $payload = array(
-            "iss" => "http://example.org",
-            "aud" => "http://example.com",
-            "iat" => 1356999524,
-            "nbf" => 1357000000
-        );
-
-        /**
-         * IMPORTANT:
-         * You must specify supported algorithms for your application. See
-         * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
-         * for a list of spec-compliant algorithms.
-         */
-        $jwt = JWT::encode($payload, $key, 'HS256');
-        $decoded_arr = (array) JWT::decode($jwt, new Key($key, 'HS256'));
-
-
-
-
-
-
-
-        $res = 'LOGGED IN '.  $user;
+        $res = $at;
         
         $res = new WP_REST_Response($res);
         $res->set_status(200);
