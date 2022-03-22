@@ -8,6 +8,36 @@ namespace boctulus\Auth4WP\libs;
 
 class Url 
 {    
+    /*
+		Patch for parse_str() native function
+
+		It could be more efficient and precise if I use a preg_replace_callback and
+		take note about which parameter was substituted
+	*/
+	static function parseStrQuery(string $s){
+		$rep = '__DOT__';
+
+		$s = str_replace('.', $rep, $s);
+
+		parse_str($s, $result);
+		
+		foreach ($result as $k => $v){
+			$pos = strpos($k, $rep);
+
+			if ($pos !== false){
+				$k2 =  str_replace($rep, '.', $k);
+				$result[$k2] = $v;
+				unset($result[$k]);
+			}
+		}
+
+		return $result;
+	}	
+
+	static function queryString(){
+		return static::parseStrQuery($_SERVER['QUERY_STRING']);		
+	}	
+
     static function getQueryParam(string $url, string $param){
         $query = parse_url($url, PHP_URL_QUERY);
 

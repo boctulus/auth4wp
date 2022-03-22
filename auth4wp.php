@@ -17,6 +17,8 @@ use boctulus\Auth4WP\libs\Strings;
 use boctulus\Auth4WP\libs\Files;
 use boctulus\Auth4WP\libs\Debug;
 use boctulus\Auth4WP\libs\Mails;
+use boctulus\Auth4WP\libs\Request;
+use boctulus\Auth4WP\libs\Auth;
 
 /*
 	Evidenciar errores
@@ -29,13 +31,15 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY){
 	error_reporting(E_ALL);
 }
 
-require __DIR__ . '/libs/Debug.php';
-require __DIR__ . '/libs/Strings.php';
-require __DIR__ . '/libs/Files.php';
-require __DIR__ . '/libs/Url.php';
-require __DIR__ . '/libs/Arrays.php';
-require __DIR__ . '/libs/Mails.php';
-require __DIR__ . '/ajax.php';
+require_once __DIR__ . '/libs/Debug.php';
+require_once __DIR__ . '/libs/Strings.php';
+require_once __DIR__ . '/libs/Files.php';
+require_once __DIR__ . '/libs/Request.php';
+require_once __DIR__ . '/libs/Url.php';
+require_once __DIR__ . '/libs/Arrays.php';
+require_once __DIR__ . '/libs/Mails.php';
+require_once __DIR__ . '/ajax.php';
+
 require __DIR__ . '/config.php';
 
 
