@@ -21,23 +21,46 @@ use boctulus\Auth4WP\libs\Url;
 
 */
 
-add_filter( 'rest_authentication_errors', function( $result ) {
-    $headers  = apache_request_headers();
-    $endpoint = $_SERVER["REQUEST_URI"];
-    $method   = $_SERVER['REQUEST_METHOD'];
+// add_filter( 'rest_authentication_errors', function( $result ) {
+//     $headers  = apache_request_headers();
+//     $endpoint = $_SERVER["REQUEST_URI"];
+//     $method   = $_SERVER['REQUEST_METHOD'];
 
-    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
-    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+//     // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+//     $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
 
-    exit;
+//     exit;
 
-    return $result;
-});
+//     return $result;
+// });
 
 /*
     Funciona con username + password ó email + password
 */
+
+// Body decode
+function body_decode(string $data){
+    $headers  = apache_request_headers();
+
+    if (isset($headers['Content-Type'])){
+        // Podría ser un switch-case aceptando otros MIMEs
+        if ($headers['Content-Type'] == 'application/x-www-form-urlencoded'){
+            $data = urldecode($data);
+            $data = Url::parseStrQuery($data);
+
+        } else {
+            $data = json_decode($data, true);
+
+            if ($data === null) {
+                throw new \Exception("JSON inválido");
+            }
+        }
+    }
+
+    return $data;
+}
+
 
 function login(WP_REST_Request $req)
 {
@@ -50,12 +73,8 @@ function login(WP_REST_Request $req)
             throw new \Exception("No se recibió la data");
         }
 
-        $data = json_decode($data, true);
-
-        if ($data === null) {
-            throw new \Exception("JSON inválido");
-        }
-
+        $data = body_decode($data);
+        
         // $lang = $req->get_param('lang');
 
         $error = new WP_Error();
@@ -77,6 +96,7 @@ function login(WP_REST_Request $req)
         }
         
         $pass = sanitize_text_field($data['password']);
+
 
         if (strpos($user_or_email, '@') !== false) {
             $u_obj = get_user_by('email', $user_or_email);
@@ -151,11 +171,7 @@ function register(WP_REST_Request $req)
             throw new \Exception("No se recibió la data");
         }
 
-        $data = json_decode($data, true);
-
-        if ($data === null) {
-            throw new \Exception("JSON inválido");
-        }
+        $data = body_decode($data);
 
         $error = new WP_Error();
 

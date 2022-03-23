@@ -29,6 +29,9 @@ class Url
 				$result[$k2] = $v;
 				unset($result[$k]);
 			}
+
+            // parche 2022
+            $result[$k] = str_replace($rep, '.', $result[$k]);
 		}
 
 		return $result;
