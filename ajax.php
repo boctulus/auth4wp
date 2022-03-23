@@ -198,8 +198,8 @@ function register(WP_REST_Request $req)
                 ];
 
                 // Ger User Data (Non-Sensitive, Pass to front end.)
-                $res['code'] = 200;
-                $res['message'] = "Registración exitosa de " + $username;
+                $res['code'] = 201;
+                $res['message'] = "Registración exitosa";
             } else {
                 return $uid;
             }
@@ -209,7 +209,7 @@ function register(WP_REST_Request $req)
             return $error;
         }
         
-        return new WP_REST_Response($res, 123);
+        return new WP_REST_Response($res, 201);
 
     } catch (\Exception $e) {
         $error->add(500, $e->getMessage());
