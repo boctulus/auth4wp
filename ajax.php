@@ -60,8 +60,8 @@ function login(WP_REST_Request $req)
 
         $error = new WP_Error();
 
-        if (!isset($data['username'])) {
-            $error->add('req_username', 'El username es requerido');
+        if (!isset($data['username']) && !isset($data['email'])) {
+            $error->add('req_username', 'Campos username o email son requeridos');
             return $error;
         }
 
@@ -70,8 +70,13 @@ function login(WP_REST_Request $req)
             return $error;
         }
 
-        $user_or_email = sanitize_text_field($data['username']);
-        $pass          = sanitize_text_field($data['password']);
+        if (isset($data['username'])){
+            $user_or_email = sanitize_text_field($data['username']);
+        } else {
+            $user_or_email = sanitize_text_field($data['email']);
+        }
+        
+        $pass = sanitize_text_field($data['password']);
 
         if (strpos($user_or_email, '@') !== false) {
             $u_obj = get_user_by('email', $user_or_email);
