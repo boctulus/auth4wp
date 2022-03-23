@@ -14,11 +14,26 @@ require_once __DIR__ . '/libs/vendors/PHP-JWT/JWT.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use boctulus\Auth4WP\libs\Auth;
+use boctulus\Auth4WP\libs\Url;
 
 /*
 	REST
 
 */
+
+add_filter( 'rest_authentication_errors', function( $result ) {
+    $headers  = apache_request_headers();
+    $endpoint = $_SERVER["REQUEST_URI"];
+    $method   = $_SERVER['REQUEST_METHOD'];
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+
+    exit;
+
+    return $result;
+});
 
 /*
     Funciona con username + password ó email + password

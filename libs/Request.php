@@ -191,47 +191,6 @@ class Request
         return http_response_code();
     }
 
-    /*  ArrayAccess       */
-
-    // function offsetSet($offset, $value) {
-    //     if (is_null($offset)) {
-    //         static::$params[] = $value;
-    //     } else {
-    //         static::$params[$offset] = $value;
-    //     }
-    // }
-
-    // function offsetExists($offset) {
-    //     return isset(static::$params[$offset]);
-    // }
-
-    // function offsetUnset($offset) {
-    //     unset(static::$params[$offset]);
-    // }
-
-    // function offsetGet($offset) {
-    //     return isset(static::$params[$offset]) ? static::$params[$offset] : null;
-    // }
-
-    function getRequestMethod(){
-        $config = config();
-
-        $asked_method = NULL;
-        if ($config['method_override']['by_url']){
-            $asked_method  =  $this->shiftQuery('_method');
-        }
-
-        if ($asked_method == NULL && $config['method_override']['by_header']){
-            $asked_method  =  $this->header('X-HTTP-Method-Override'); 
-        }
-
-        if ($asked_method == NULL){
-            $asked_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
-        }
-        
-        return $asked_method;
-    }
-
     static function ip(){
         return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
     }
