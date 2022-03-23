@@ -20,8 +20,11 @@ use boctulus\Auth4WP\libs\Auth;
 
 */
 
+// permitir usar correo@ en vez de username
 function login(WP_REST_Request $req)
 {
+    global $jwt;
+
     $data = $req->get_body();
 
     try {
@@ -59,15 +62,34 @@ function login(WP_REST_Request $req)
             $error = new WP_Error(); 
 
             foreach ($errors as $err){
-                $error->add(401, TAGS_IN_RESPONSE ? $err : strip_tags($err));
+                $error->add(401, HTML_RESPONSE ? $err : strip_tags($err));
             }
 
             return $error;
         }
 
-        $at = Auth::gen_jwt([], 'access_token'); 
+        $uid   = $auth->ID;
+        $roles = Auth::userRoles($uid);
 
-        $res = $at;
+        $access  = Auth::gen_jwt([
+            'uid'       => $uid, 
+            'roles'     => $roles, 
+        ], 'access_token'); 
+
+        // el refresh no debe llevar ni roles ni permisos por seguridad !
+        $refresh = Auth::gen_jwt([
+            'uid' => $uid
+        ], 'refresh_token');
+
+        $res = [ 
+            'access_token'=> $access,
+            'token_type' => 'bearer', 
+            'expires_in' => $jwt['access_token']['expiration_time'],
+            'refresh_token' => $refresh,   
+            'roles' => $roles,
+            'uid' => $uid
+        ];
+
         
         $res = new WP_REST_Response($res);
         $res->set_status(200);

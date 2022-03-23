@@ -5,7 +5,7 @@
     boctulus@gmail.com
 */
 
-define('TAGS_IN_RESPONSE', false);
+define('HTML_RESPONSE', false);
 
 $jwt = [
     'access_token' => [
