@@ -174,16 +174,38 @@ function register(WP_REST_Request $req)
                 if (class_exists('WooCommerce')) {
                     $user->set_role('customer');
                 }
-            
+
+                $uid   = $user->ID;
+                $roles = Auth::userRoles($uid);
+
+                $access  = Auth::gen_jwt([
+                    'uid'       => $uid,
+                    'roles'     => $roles,
+                ], 'access_token');
+
+                // el refresh no debe llevar ni roles ni permisos por seguridad !
+                $refresh = Auth::gen_jwt([
+                    'uid' => $uid
+                ], 'refresh_token');
+
+                $res = [
+                    'access_token' => $access,
+                    'token_type' => 'bearer',
+                    'expires_in' => $jwt['access_token']['expiration_time'],
+                    'refresh_token' => $refresh,
+                    'roles' => $roles,
+                    'uid' => $uid
+                ];
+
                 // Ger User Data (Non-Sensitive, Pass to front end.)
                 $res['code'] = 200;
-                $res['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
+                $res['message'] = "Registración exitosa de " + $username;
             } else {
                 return $uid;
             }
         
         } else {
-            $error->add(406, __("Email already exists, please try 'Reset Password'", 'wp-rest-user'), array('status' => 400));
+            $error->add(406, "Email ya existe. Intente restablecer contraseña", array('status' => 400));
             return $error;
         }
         
