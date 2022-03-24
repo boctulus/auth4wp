@@ -57,7 +57,7 @@ Registro
 		"email": "boctulus7312@gmail.com",
 		"password": "gogogo2kxxxxxxxx"
 	}
-	
+
 Login
 
 Ej:
@@ -90,3 +90,41 @@ Ej:
 	username: mi_user
 	password: !!YE><XWA<%0@$y=.#
 
+
+Para *securitizar* una ruta se la agrega al config.php que está dentro del plugin. Las rutas pueden provenir de cualquier lado (ser nativas de Wordpress, definidas por un plugin cualquiera)
+
+Se especifica la ruta como "slug" y los roles admitidos para esa ruta.
+
+Ej:
+
+$endpoints = [
+    [
+        "slug" => "/wp-json/cotizar/v1/dollar",
+        "roles" => [
+            "editor", 
+            "administrator"
+        ]
+    ],
+
+    [
+        "slug" => "/wp-json/wp/v2/media",
+        "roles" => [
+            "editor",
+            "administrator"
+        ]
+    ],
+
+    [
+        "slug" => "/wp-json/auth/v1/me",
+        "roles" => [
+            //"editor",
+            "administrator"
+        ]
+    ],
+
+    // otros endpoints a ser securitizados
+];
+
+Curiosamente por un bug en el core de WP, solo funciona si se accede a la ruta por http y no por https *excepto* que el verbo aplicado a la ruta sea POST (o al menos con GET no funciona bajo SSL).
+
+Se pedirá un token JWT el cual es el "access token" devuelto al registrarse o loguearse. El token tiene expiración.

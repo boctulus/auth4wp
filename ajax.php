@@ -22,6 +22,8 @@ use boctulus\Auth4WP\libs\Url;
 */
 
 add_filter( 'rest_authentication_errors', function( $result ) {
+    #var_dump("PK PULKETO");/////
+
     global $jwt, $endpoints;
 
     $headers          = apache_request_headers();
@@ -32,7 +34,7 @@ add_filter( 'rest_authentication_errors', function( $result ) {
     $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
     $error = new WP_Error();
-    
+
     if (!empty($endpoints)){
         foreach ($endpoints as $endpoint){  
             if ($current_endpoint != $endpoint['slug']){
@@ -106,6 +108,17 @@ add_filter( 'rest_authentication_errors', function( $result ) {
 
     return $result;
 });
+
+
+
+function me(){
+    $res = "Hola Alberto!";
+
+    $res = new WP_REST_Response($res);
+    $res->set_status(200);
+
+    return $res;
+}
 
 /*
     Funciona con username + password ó email + password

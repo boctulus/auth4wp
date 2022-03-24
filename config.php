@@ -41,6 +41,14 @@ $endpoints = [
         ]
     ],
 
+    [
+        "slug" => "/wp-json/auth/v1/me",
+        "roles" => [
+            //"editor",
+            "administrator"
+        ]
+    ],
+
     // otros endpoints a ser securitizados
 ];
 
