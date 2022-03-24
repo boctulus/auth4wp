@@ -21,19 +21,90 @@ use boctulus\Auth4WP\libs\Url;
 
 */
 
-// add_filter( 'rest_authentication_errors', function( $result ) {
-//     $headers  = apache_request_headers();
-//     $endpoint = $_SERVER["REQUEST_URI"];
-//     $method   = $_SERVER['REQUEST_METHOD'];
+add_filter( 'rest_authentication_errors', function( $result ) {
+    global $jwt;
 
-//     // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
-//     $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+    $headers  = apache_request_headers();
+    $endpoint = $_SERVER["REQUEST_URI"];
+    $method   = $_SERVER['REQUEST_METHOD'];
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+    $error = new WP_Error();
+
+    // Un endpoint a securitizar
+    // debería especifica roles o capabilities para poder accederlo
+    if ($endpoint == '/wp-json/cotizar/v1/dollar'){
+        if (empty($auth)){
+            $error->add(401, "El header 'Authorization' con el token JWT es requerido");
+            return $error;
+        }
+
+        try {
+            list($token) = sscanf($auth, 'Bearer %s');
+
+            /*
+                array (
+                'alg' => 'HS256',
+                'typ' => 'JWT',
+                'iat' => 1648083670,
+                'exp' => 1657083670,
+                'ip' => '127.0.0.1',
+                'user_agent' => 'PostmanRuntime/7.29.0',
+                'uid' => 9,
+                'roles' => 
+                array (
+                    0 => 'editor',
+                ),
+            )
+            */
+            $payload = JWT::decode($token, new Key($jwt['access_token']['secret_key'], $jwt['access_token']['encryption']));
+
+            if (empty($payload)){
+                $error->add(401, 'Sin autorización');
+                return $error;
+            }                     
+
+            if (empty($payload->uid)){
+                $error->add(401, 'Sin autorización');
+                return $error;
+            }
+
+            if (empty($payload->roles)){
+                $error->add(401, 'Sin autorización');
+                return $error;
+            }
+
+            // Ej:
+            $authorized_roles = [
+                'editor',
+                'administrator'
+            ];
+
+            $authorized = false;
+            foreach ($payload->roles as $role){
+                if (in_array($role, $authorized_roles)){
+                    $authorized = true;
+                    break;
+                }
+            }
+
+            if (!$authorized){
+                $error->add(403, 'Acceso denegado');
+                return $error;
+            }
+
+        } catch (\Exception $e){    
+            $error->add(500, $e->getMessage());
+            return $error;
+        }
+        
+    }
 
 
-//     exit;
-
-//     return $result;
-// });
+    return $result;
+});
 
 /*
     Funciona con username + password ó email + password
