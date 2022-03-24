@@ -49,6 +49,12 @@ if (!function_exists('dd')){
 	}
 }
 
+if (!function_exists('here')){
+	function here(){
+		Debug::dd('HERE');
+	}
+}
+
 function enqueues() 
 {  
 	//if (!is_home()){

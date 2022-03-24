@@ -83,7 +83,6 @@ class Debug
 	static public function d($val, $msg = null, callable $precondition_fn = null){
 		return static::dd($val, $msg, $precondition_fn);
 	}
-
 }
 
 

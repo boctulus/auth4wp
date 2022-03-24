@@ -5,7 +5,45 @@
     boctulus@gmail.com
 */
 
-define('HTML_RESPONSE', false);
+
+/*
+    Idealmente debería crear un endpoint donde pueda enviar los endpoints que serán securitizados y los roles admitidos
+    
+    POST /auth/v1/endpoints
+
+    [
+        {
+            "slug": "/wp-json/cotizar/v1/dollar",
+            "roles": ["editor", "administrator"]
+        },
+
+        // otros endpoints
+    ]
+
+    Esto implica que ese endpoint deba ser accesile (y visible) solo para un "administrator" y 
+    que la data deba almacenarse en la base de datos !
+*/
+
+$endpoints = [
+    [
+        "slug" => "/wp-json/cotizar/v1/dollar",
+        "roles" => [
+            "editor", 
+            "administrator"
+        ]
+    ],
+
+    [
+        "slug" => "/wp-json/wp/v2/media",
+        "roles" => [
+            "editor",
+            "administrator"
+        ]
+    ],
+
+    // otros endpoints a ser securitizados
+];
+
 
 $jwt = [
     'access_token' => [
