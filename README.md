@@ -44,3 +44,49 @@ define('TOKENS_EMAIL_SECRET_KEY','ZTbD:||:"%;(]]I{Q[*Q"[}=J`.~z#j*.-Vt"]*!~>#k}`
 ### Shortcode
 
 Los shortcodes son [auth4wp_login], [auth4wp_registration] y [auth4wp_rememberme]
+
+
+### Notas
+
+Registro
+
+	POST /wp-json/auth/v1/register
+
+	{
+		"username": "boctulus7312000",
+		"email": "boctulus7312@gmail.com",
+		"password": "gogogo2kxxxxxxxx"
+	}
+	
+Login
+
+Ej:
+
+	POST /wp-json/auth/v1/login
+
+	{
+		"username": "boctulus7312000",
+		"password": "gogogo2kxxxxxxxx"
+	}
+
+o con email en vez de username:
+
+	POST /wp-json/auth/v1/login
+
+	{
+		"email": "boctulus7312@gmail.com",
+		"password": "gogogo2kxxxxxxxx"
+	}
+
+
+Si se desea enviar un password (ya sea en el registro o login) con caracteres "especiales" debe hacerse con el header
+
+	Content-Type: application/x-www-form-urlencode
+
+Ej:
+
+	POST /wp-json/auth/v1/login
+
+	username: mi_user
+	password: !!YE><XWA<%0@$y=.#
+

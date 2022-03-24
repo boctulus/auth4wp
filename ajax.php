@@ -39,29 +39,6 @@ use boctulus\Auth4WP\libs\Url;
     Funciona con username + password ó email + password
 */
 
-// Body decode
-function body_decode(string $data){
-    $headers  = apache_request_headers();
-
-    if (isset($headers['Content-Type'])){
-        // Podría ser un switch-case aceptando otros MIMEs
-        if ($headers['Content-Type'] == 'application/x-www-form-urlencoded'){
-            $data = urldecode($data);
-            $data = Url::parseStrQuery($data);
-
-        } else {
-            $data = json_decode($data, true);
-
-            if ($data === null) {
-                throw new \Exception("JSON inválido");
-            }
-        }
-    }
-
-    return $data;
-}
-
-
 function login(WP_REST_Request $req)
 {
     global $jwt;
@@ -73,7 +50,7 @@ function login(WP_REST_Request $req)
             throw new \Exception("No se recibió la data");
         }
 
-        $data = body_decode($data);
+        $data = Url::bodyDecode($data);
         
         // $lang = $req->get_param('lang');
 
@@ -95,8 +72,7 @@ function login(WP_REST_Request $req)
             $user_or_email = sanitize_text_field($data['email']);
         }
         
-        $pass = sanitize_text_field($data['password']);
-
+        $pass = $data['password'];
 
         if (strpos($user_or_email, '@') !== false) {
             $u_obj = get_user_by('email', $user_or_email);
@@ -171,7 +147,7 @@ function register(WP_REST_Request $req)
             throw new \Exception("No se recibió la data");
         }
 
-        $data = body_decode($data);
+        $data = Url::bodyDecode($data);
 
         $error = new WP_Error();
 
@@ -192,7 +168,7 @@ function register(WP_REST_Request $req)
 
         $username = sanitize_text_field($data['username']);
         $email    = sanitize_text_field($data['email']);
-        $password = sanitize_text_field($data['password']);
+        $password = $data['password'];
 
         $uid = username_exists($username);
 
