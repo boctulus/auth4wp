@@ -519,9 +519,14 @@ function rememberme(WP_REST_Request $req)
 
         $u = get_user_by('email', $data['email']);
        
-        if (!empty($u)){
-            // envio del link al correo
-            dd("Enviando hiperlink ...");
+         // envio del link al correo
+        if (!empty($u)){           
+            $email_token = Auth::gen_jwt_rememberme($u->ID);
+            $base_url = get_site_url();
+
+            $link = "$base_url/wp-json/v1/auth/change_pass_by_link/$email_token";
+
+            dd("Enviando hiperlink: $link");
         }
 
         $res = [

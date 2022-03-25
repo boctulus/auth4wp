@@ -30,6 +30,23 @@ class Url
         return $data;
     }
 
+    static function has_ssl( $domain ) {
+        $ssl_check = @fsockopen( 'ssl://' . $domain, 443, $errno, $errstr, 30 );
+        $res = !! $ssl_check;
+        
+        if ( $ssl_check ) {
+             fclose( $ssl_check ); 
+        }
+        
+        return $res;
+    }
+
+    static function http_protocol(){ 
+        $protocol = self::has_ssl($_SERVER['HTTP_HOST']) ? 'https' : 'http';
+        
+        return $protocol;
+    }
+
     /*
 		Patch for parse_str() native function
 
