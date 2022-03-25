@@ -7,7 +7,7 @@
 
 
 /*
-    Idealmente debería crear un endpoint donde pueda enviar los endpoints que serán securitizados y los roles admitidos
+    Idealmente se debería crear un endpoint donde pueda enviar los endpoints que serán securitizados y los roles admitidos
     
     POST /auth/v1/endpoints
 
@@ -24,11 +24,16 @@
     que la data deba almacenarse en la base de datos !
 */
 
+/* 
+    Securitized endpoints F
+*/
 $endpoints = [
     [
-        "slug" => "/wp-json/cotizar/v1/dollar",
+        "slug" => "/wp-json/quote/v1/dollar",
         "roles" => [
-            "editor", 
+            // 'author',
+            // "editor", 
+            //"customer",
             "administrator"
         ]
     ],
@@ -41,15 +46,7 @@ $endpoints = [
         ]
     ],
 
-    [
-        "slug" => "/wp-json/auth/v1/me",
-        "roles" => [
-            //"editor",
-            "administrator"
-        ]
-    ],
-
-    // otros endpoints a ser securitizados
+    // more endpoints to be securitized
 ];
 
 

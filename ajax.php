@@ -22,8 +22,6 @@ use boctulus\Auth4WP\libs\Url;
 */
 
 add_filter( 'rest_authentication_errors', function( $result ) {
-    #var_dump("PK PULKETO");/////
-
     global $jwt, $endpoints;
 
     $headers          = apache_request_headers();
@@ -68,17 +66,22 @@ add_filter( 'rest_authentication_errors', function( $result ) {
                 $payload = JWT::decode($token, new Key($jwt['access_token']['secret_key'], $jwt['access_token']['encryption']));
     
                 if (empty($payload)){
-                    $error->add(401, 'Sin autorización');
+                    $error->add(401, 'Unauthorized');
                     return $error;
                 }                     
     
                 if (empty($payload->uid)){
-                    $error->add(401, 'Sin autorización');
+                    $error->add(401, 'Unauthorized');
                     return $error;
                 }
     
                 if (empty($payload->roles)){
-                    $error->add(401, 'Sin autorización');
+                    $error->add(401, 'Unauthorized');
+                    return $error;
+                }
+
+                if ($payload->exp < time()){
+                    $error->add(401, 'Token expired, please log in');
                     return $error;
                 }
                 
@@ -99,7 +102,7 @@ add_filter( 'rest_authentication_errors', function( $result ) {
             }
 
             if (!$authorized){
-                $error->add(403, 'Acceso denegado');
+                $error->add(403, 'Forbidden');
                 return $error;
             }
         }
@@ -109,7 +112,97 @@ add_filter( 'rest_authentication_errors', function( $result ) {
     return $result;
 });
 
+function token()
+{
+    global $jwt, $endpoints;
 
+    $headers          = apache_request_headers();
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+    $error = new WP_Error();
+
+    if (empty($auth)){
+        $error->add(401, "El header 'Authorization' con el token JWT es requerido");
+        return $error;
+    }
+
+    try {
+        list($token) = sscanf($auth, 'Bearer %s');
+
+        /*
+            array (
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+            'iat' => 1648083670,
+            'exp' => 1657083670,
+            'ip' => '127.0.0.1',
+            'user_agent' => 'PostmanRuntime/7.29.0',
+            'uid' => 9,
+            'roles' => 
+            array (
+                0 => 'editor',
+            ),
+        )
+        */
+        $payload = JWT::decode($token, new Key($jwt['refresh_token']['secret_key'], $jwt['refresh_token']['encryption']));
+
+        if (empty($payload)){
+            $error->add(401, 'Unauthorized.');
+            return $error;
+        }                     
+
+        if (empty($payload->uid)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if (empty($payload->roles)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if ($payload->exp < time()){
+            $error->add(401, 'Token expired, please log in');
+            return $error;
+        }
+        
+    } catch (\Exception $e){    
+        $error->add(500, $e->getMessage());
+        return $error;
+    }
+
+    //dd($payload);
+
+    $uid   = $payload->uid;
+    $roles = $payload->roles;
+
+    $access  = Auth::gen_jwt([
+        'uid'       => $uid,
+        'roles'     => $roles,
+    ], 'access_token');
+
+    // el refresh no debe llevar ni roles ni permisos por seguridad !
+    $refresh = Auth::gen_jwt([
+        'uid' => $uid
+    ], 'refresh_token');
+
+    $res = [
+        'access_token' => $access,
+        'token_type' => 'bearer',
+        'expires_in' => $jwt['access_token']['expiration_time'],
+        'refresh_token' => $refresh,
+        'roles' => $roles,
+        'uid' => $uid,
+        'message' => 'Renovación de tokens exitosa'
+    ];
+
+    $res = new WP_REST_Response($res);
+    $res->set_status(200);
+
+    return $res;
+}
 
 function me(){
     $res = "Hola Alberto!";
@@ -119,6 +212,7 @@ function me(){
 
     return $res;
 }
+
 
 /*
     Funciona con username + password ó email + password
@@ -282,7 +376,8 @@ function register(WP_REST_Request $req)
 
                 // el refresh no debe llevar ni roles ni permisos por seguridad !
                 $refresh = Auth::gen_jwt([
-                    'uid' => $uid
+                    'uid' => $uid,
+                    'roles'     => $roles,
                 ], 'refresh_token');
 
                 $res = [
@@ -341,6 +436,12 @@ add_action('rest_api_init', function () {
     register_rest_route('auth/v1', '/me', array(
         'methods' => 'POST',
         'callback' => 'me',
+        'permission_callback' => '__return_true'
+    ));
+
+    register_rest_route('auth/v1', '/token', array(
+        'methods' => 'POST',
+        'callback' => 'token',
         'permission_callback' => '__return_true'
     ));
 });

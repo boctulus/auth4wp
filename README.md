@@ -97,34 +97,65 @@ Se especifica la ruta como "slug" y los roles admitidos para esa ruta.
 
 Ej:
 
-$endpoints = [
-    [
-        "slug" => "/wp-json/cotizar/v1/dollar",
-        "roles" => [
-            "editor", 
-            "administrator"
-        ]
-    ],
+    $endpoints = [
+        [
+            "slug" => "/wp-json/cotizar/v1/dollar",
+            "roles" => [
+                "editor", 
+                "administrator"
+            ]
+        ],
 
-    [
-        "slug" => "/wp-json/wp/v2/media",
-        "roles" => [
-            "editor",
-            "administrator"
-        ]
-    ],
+        [
+            "slug" => "/wp-json/wp/v2/media",
+            "roles" => [
+                "editor",
+                "administrator"
+            ]
+        ],
 
-    [
-        "slug" => "/wp-json/auth/v1/me",
-        "roles" => [
-            //"editor",
-            "administrator"
-        ]
-    ],
+        [
+            "slug" => "/wp-json/auth/v1/me",
+            "roles" => [
+                //"editor",
+                "administrator"
+            ]
+        ],
 
-    // otros endpoints a ser securitizados
-];
+        // otros endpoints a ser securitizados
+    ];
+
 
 Curiosamente por un bug en el core de WP, solo funciona si se accede a la ruta por http y no por https *excepto* que el verbo aplicado a la ruta sea POST (o al menos con GET no funciona bajo SSL).
 
 Se pedirá un token JWT el cual es el "access token" devuelto al registrarse o loguearse. El token tiene expiración.
+
+
+# Renovación de tokens
+
+Es posible usar un segundo token llamado "refresh token" para renovar el access token y así evitarse enviar nuevamente usuario y password cuando el token expire. Recordar que la expiración de cada token es definido por unas constantes que deberían ir en el archivo wp-config.php aunque también funcionará si las coloca en el config.php del plugin.
+
+Cómo se hace?
+
+	POST /wp-json/auth/v1/token
+
+Y se envia el refres_token en headers y sin body. Ej:
+
+Authorization: Bearer eyJ0eXAiOiJK.........
+
+Se devolverá un nuevo acccess token en un JSON como este:
+
+    {
+        "access_token": "eyJ0eXAiOiJK....4s",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAi...i8kGw8",
+        "roles": [
+            "editor",
+            "customer"
+        ],
+        "uid": 13,
+        "message": "Renovación de tokens exitosa"
+    }
+
+Importante: no confunda el refresh con el access token porque son cifrados con llaves distintas y no son intercambiables.
