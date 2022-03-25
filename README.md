@@ -204,34 +204,27 @@ Ej:
 Rta:
 
 	{
-		"data": {
-			"link_sent": "http://woo1.lan/wp-json/v1/auth/change_pass_by_link/eyJ0eX...I15SY/1598117791"
-		},
-		"error": "",
-		"error_detail": ""
+		"message": "You will receive a verification email with a hyperlink"
 	}
 
 Al seguir el enlace se devuelve un nuevo JSON con el access token necesario para poder realizar el cambio de contraseña. Redireccionar a la vista correspondiente es un asunto aparte.
 
     {
-        "data": {
-            "access_token": "eyJ0eXAi.....4fAs",
-            "token_type": "bearer",
-            "expires_in": 900,
-            "uid": "350",
-            "roles": [
-                "customer",
-            ]
-        },
-        "error": "",
-        "error_detail": ""
-    }
+    "access_token": "eyJ0.......qnJD5jtHQ",
+    "token_type": "bearer",
+    "expires_in": 9000000,
+    "refresh_token": "eyJ0eXAi..F1im6mQiQ",
+    "roles": [
+        "administrator"
+    ],
+    "uid": 1
+}
 
 Finalmente para cambiar efectivamente la contraseña se hace uso del siguiente endpoint enviando las credenciales correspondientes (refresh token)
 
 	PATCH /wp-json/auth/v1/me
 
-    Authorization: Bearer blabla........bla
+    Authorization: Bearer ebzX...45ldx-.3   <-- refresh token *
 
 	{
 		"password": "xxxxx"

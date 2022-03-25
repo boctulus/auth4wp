@@ -184,9 +184,9 @@ function token()
         'roles'     => $roles,
     ], 'access_token');
 
-    // el refresh no debe llevar ni roles ni permisos por seguridad !
     $refresh = Auth::gen_jwt([
-        'uid' => $uid
+        'uid'       => $uid,
+        'roles'     => $roles, // *
     ], 'refresh_token');
 
     $res = [
@@ -280,10 +280,9 @@ function login(WP_REST_Request $req)
             'roles'     => $roles,
         ], 'access_token');
 
-        // el refresh no debe llevar ni roles ni permisos por seguridad !
         $refresh = Auth::gen_jwt([
-            'uid' => $uid,
-            'roles'     => $roles,
+            'uid'   => $uid,
+            'roles' => $roles,
         ], 'refresh_token');
 
         $res = [
@@ -366,10 +365,10 @@ function register(WP_REST_Request $req)
                     'roles'     => $roles,
                 ], 'access_token');
 
-                // el refresh no debe llevar ni roles ni permisos por seguridad !
+
                 $refresh = Auth::gen_jwt([
-                    'uid' => $uid,
-                    'roles'     => $roles,
+                    'uid'   => $uid,
+                    'roles' => $roles, // *
                 ], 'refresh_token');
 
                 $res = [
@@ -602,17 +601,17 @@ function rememberme(WP_REST_Request $req)
             $email_token = Auth::gen_jwt_rememberme($u->ID);
             $base_url = get_site_url();
 
-            $link = "$base_url/wp-json/v1/auth/change_pass_by_link/$email_token";
+            $link = "$base_url/wp-json/auth/v1/change_pass_by_link/$email_token";
 
             $body = "Hola!
             <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
 
-            // Mails::sendMail($data['email'], '', 'Recuperación de password', $body);
+            Mails::sendMail($data['email'], '', 'Recuperación de password', $body);
 
             // dd(Mails::status());
             // dd(Mails::errors());
 
-            dd("Enviando hiperlink: $link");
+            //dd("Enviando hiperlink: $link");
         }
 
         $res = [
@@ -635,7 +634,63 @@ function rememberme(WP_REST_Request $req)
     Recibo un token y cambio la contraseña
 */
 function change_pass_by_link(WP_REST_Request $req){
-    dd($req->get_param('token'));
+    global $jwt;
+
+    $token = $req->get_param('token');
+
+    try {    
+        $payload = JWT::decode($token, new Key($jwt['email_token']['secret_key'], $jwt['email_token']['encryption']));
+
+        $error = new WP_Error();
+
+        if (empty($payload)){
+            $error->add(401, 'Unauthorized');
+            return $error;
+        }                     
+
+        if (empty($payload->uid)){
+            $error->add(401, 'Unauthorized.');
+            return $error;
+        }
+
+        if ($payload->exp < time()){
+            $error->add(401, 'Token expired');
+            return $error;
+        }
+
+        $u = get_user_by('id', $payload->uid);
+
+        $uid   = $payload->uid;
+        $roles = $u->roles;
+
+        $access  = Auth::gen_jwt([
+            'uid'       => $uid,
+            'roles'     => $roles,
+        ], 'access_token');
+
+        $refresh = Auth::gen_jwt([
+            'uid' => $uid,
+            'roles' => $roles, // *
+        ], 'refresh_token');
+
+        $res = [
+            'access_token' => $access,
+            'token_type' => 'bearer',
+            'expires_in' => $jwt['access_token']['expiration_time'],
+            'refresh_token' => $refresh,
+            'roles' => $roles,
+            'uid' => $uid
+        ];
+
+        $res = new WP_REST_Response($res);
+        $res->set_status(200);
+
+        return $res;
+        
+    } catch (\Exception $e){    
+        $error->add(500, $e->getMessage());
+        return $error;
+    }
 }
 
 
