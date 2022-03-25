@@ -635,7 +635,7 @@ function rememberme(WP_REST_Request $req)
     Recibo un token y cambio la contraseña
 */
 function change_pass_by_link(WP_REST_Request $req){
-    dd($req);
+    dd($req->get_param('token'));
 }
 
 
@@ -680,7 +680,7 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ));
 
-    register_rest_route('auth/v1', '/change_pass_by_link', array(
+    register_rest_route('auth/v1', '/change_pass_by_link/(?P<token>[a-zA-Z0-9._\-]+)', array(
         'methods' => 'GET',
         'callback' => 'change_pass_by_link',
         'permission_callback' => '__return_true'
