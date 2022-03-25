@@ -227,12 +227,12 @@ function login(WP_REST_Request $req)
         $error = new WP_Error();
 
         if (!isset($data['username']) && !isset($data['email'])) {
-            $error->add('req_username', 'Campos username o email son requeridos');
+            $error->add(400, 'Campos username o email son requeridos');
             return $error;
         }
 
         if (!isset($data['password'])) {
-            $error->add('req_password', 'El password es requerido');
+            $error->add(400, 'El password es requerido');
             return $error;
         }
 
@@ -305,7 +305,6 @@ function login(WP_REST_Request $req)
         return $error;
     }
 }
-
 
 function register(WP_REST_Request $req)
 {
@@ -498,6 +497,50 @@ function patch_me(WP_REST_Request $req){
 }
 
 
+function rememberme(WP_REST_Request $req)
+{
+    global $jwt;
+
+    $data = $req->get_body();
+
+    try {
+        if ($data === null) {
+            throw new \Exception("No data");
+        }
+
+        $data = Url::bodyDecode($data);
+
+        $error = new WP_Error();
+
+        if (!isset($data['email'])) {
+            $error->add(400, 'Email is required');
+            return $error;
+        }
+
+        $u = get_user_by('email', $data['email']);
+       
+        if (!empty($u)){
+            // envio del link al correo
+            dd("Enviando hiperlink ...");
+        }
+
+        $res = [
+            'message' => 'You will receive a verification email with a hyperlink'
+        ];
+
+        $res = new WP_REST_Response($res);
+        $res->set_status(200);
+
+        return $res;
+    } catch (\Exception $e) {
+        $error = new WP_Error();
+        $error->add('general', $e->getMessage());
+
+        return $error;
+    }
+}
+
+
 
 /*
 	/wp-json/auth/v1/xxxxx
@@ -516,12 +559,6 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ));
 
-    register_rest_route('auth/v1', '/rememberme', array(
-        'methods' => 'POST',
-        'callback' => 'remembermer',
-        'permission_callback' => '__return_true'
-    ));
-
     register_rest_route('auth/v1', '/token', array(
         'methods' => 'POST',
         'callback' => 'token',
@@ -537,6 +574,12 @@ add_action('rest_api_init', function () {
     register_rest_route('auth/v1', '/me', array(
         'methods' => 'PATCH',
         'callback' => 'patch_me',
+        'permission_callback' => '__return_true'
+    ));
+
+    register_rest_route('auth/v1', '/rememberme', array(
+        'methods' => 'POST',
+        'callback' => 'rememberme',
         'permission_callback' => '__return_true'
     ));
 });
