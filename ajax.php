@@ -204,81 +204,6 @@ function token()
     return $res;
 }
 
-function get_me(){
-    global $jwt;
-
-    $headers = apache_request_headers();
-
-    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
-    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
-
-    $error = new WP_Error();
-
-    if (empty($auth)){
-        $error->add(401, "El header 'Authorization' con el 'access' token JWT es requerido");
-        return $error;
-    }
-
-    try {
-        list($token) = sscanf($auth, 'Bearer %s');
-
-        /*
-            array (
-            'alg' => 'HS256',
-            'typ' => 'JWT',
-            'iat' => 1648083670,
-            'exp' => 1657083670,
-            'ip' => '127.0.0.1',
-            'user_agent' => 'PostmanRuntime/7.29.0',
-            'uid' => 9,
-            'roles' => 
-            array (
-                0 => 'editor',
-            ),
-        )
-        */
-        $payload = JWT::decode($token, new Key($jwt['access_token']['secret_key'], $jwt['access_token']['encryption']));
-
-        if (empty($payload)){
-            $error->add(401, 'Unauthorized.');
-            return $error;
-        }                     
-
-        if (empty($payload->uid)){
-            $error->add(401, 'Unauthorized..');
-            return $error;
-        }
-
-        if (empty($payload->roles)){
-            $error->add(401, 'Unauthorized..');
-            return $error;
-        }
-
-        if ($payload->exp < time()){
-            $error->add(401, 'Token expired, please log in');
-            return $error;
-        }
-        
-    } catch (\Exception $e){    
-        $error->add(500, $e->getMessage());
-        return $error;
-    }
-
-    $u = get_user_by('ID', $payload->uid);
-
-    $res = [
-        'uid'           => $payload->uid,
-        'username'      => $u->user_login,
-        'roles'         => $payload->roles,
-        'registered_at' => $u->user_registered
-    ];
-
-    $res = new WP_REST_Response($res);
-    $res->set_status(200);
-
-    return $res;
-}
-
 
 /*
     Funciona con username + password ó email + password
@@ -356,7 +281,8 @@ function login(WP_REST_Request $req)
 
         // el refresh no debe llevar ni roles ni permisos por seguridad !
         $refresh = Auth::gen_jwt([
-            'uid' => $uid
+            'uid' => $uid,
+            'roles'     => $roles,
         ], 'refresh_token');
 
         $res = [
@@ -389,7 +315,7 @@ function register(WP_REST_Request $req)
 
     try {
         if ($data === null) {
-            throw new \Exception("No se recibió la data");
+            throw new \Exception("No data");
         }
 
         $data = Url::bodyDecode($data);
@@ -457,13 +383,13 @@ function register(WP_REST_Request $req)
 
                 // Ger User Data (Non-Sensitive, Pass to front end.)
                 $res['code'] = 201;
-                $res['message'] = "Registración exitosa";
+                $res['message'] = "Successful registration";
             } else {
                 return $uid;
             }
         
         } else {
-            $error->add(406, "Email ya existe. Intente restablecer contraseña", array('status' => 400));
+            $error->add(406, "Email already exists. Try to reset password.", array('status' => 400));
             return $error;
         }
         
@@ -471,6 +397,103 @@ function register(WP_REST_Request $req)
 
     } catch (\Exception $e) {
         $error->add(500, $e->getMessage());
+    }
+}
+
+/*
+    En principio solo para actualizar password
+
+    Requiere del "refresh" token ***
+*/
+function patch_me(WP_REST_Request $req){
+    global $jwt;
+
+    $headers = apache_request_headers();
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+    $error = new WP_Error();
+
+    if (empty($auth)){
+        $error->add(401, "The 'Authorization' header with the JWT 'access' token is required");
+        return $error;
+    }
+
+    try {
+        list($token) = sscanf($auth, 'Bearer %s');
+
+        /*
+            array (
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+            'iat' => 1648083670,
+            'exp' => 1657083670,
+            'ip' => '127.0.0.1',
+            'user_agent' => 'PostmanRuntime/7.29.0',
+            'uid' => 9,
+            'roles' => 
+            array (
+                0 => 'editor',
+            ),
+        )
+        */
+        $payload = JWT::decode($token, new Key($jwt['refresh_token']['secret_key'], $jwt['refresh_token']['encryption']));
+
+        if (empty($payload)){
+            $error->add(401, 'Unauthorized.');
+            return $error;
+        }                     
+
+        if (empty($payload->uid)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if (empty($payload->roles)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if ($payload->exp < time()){
+            $error->add(401, 'Token expired, please log in');
+            return $error;
+        }
+
+        // ...
+
+        $data = $req->get_body();
+
+        if ($data === null) {
+            throw new \Exception("No data");
+        }
+
+        $data = Url::bodyDecode($data);
+
+        if (!isset($data['password'])){
+            $error = new WP_Error();
+
+            $error->add(400, 'Password is required');
+            return $error;
+        }
+
+        $pass = $data['password'];
+
+        // not working
+        wp_set_password($pass, $payload->uid);
+
+        $res = [
+            'message' => 'Successful password change'
+        ];
+
+        $res = new WP_REST_Response($res);
+        $res->set_status(200);
+
+        return $res;
+        
+    } catch (\Exception $e){    
+        $error->add(500, $e->getMessage());
+        return $error;
     }
 }
 
@@ -508,6 +531,12 @@ add_action('rest_api_init', function () {
     register_rest_route('auth/v1', '/me', array(
         'methods' => 'GET',
         'callback' => 'get_me',
+        'permission_callback' => '__return_true'
+    ));
+
+    register_rest_route('auth/v1', '/me', array(
+        'methods' => 'PATCH',
+        'callback' => 'patch_me',
         'permission_callback' => '__return_true'
     ));
 });

@@ -185,3 +185,54 @@ Rta:
         ],
         "registered_at": "2022-03-25 19:41:20"
     }
+
+
+# Recordar contraseña
+
+Para poder recordar la contraseña se provee de un endpoint. No es necesario enviar nada en Authorization.
+
+Ej:
+
+	POST /api/v1/auth/rememberme
+
+	{
+		"email": "usuario@mail.com"
+	}
+
+=> devuelve un JSON con el enlace (request por GET) para cambiar la contraseña 	
+
+Rta:
+
+	{
+		"data": {
+			"link_sent": "http://woo1.lan/wp-json/v1/auth/change_pass_by_link/eyJ0eX...I15SY/1598117791"
+		},
+		"error": "",
+		"error_detail": ""
+	}
+
+Al seguir el enlace se devuelve un nuevo JSON con el access token necesario para poder realizar el cambio de contraseña. Redireccionar a la vista correspondiente es un asunto aparte.
+
+    {
+        "data": {
+            "access_token": "eyJ0eXAi.....4fAs",
+            "token_type": "bearer",
+            "expires_in": 900,
+            "uid": "350",
+            "roles": [
+                "customer",
+            ]
+        },
+        "error": "",
+        "error_detail": ""
+    }
+
+Finalmente para cambiar efectivamente la contraseña se hace uso del siguiente endpoint enviando las credenciales correspondientes (refresh token)
+
+	PATCH /wp-json/auth/v1/me
+
+    Authorization: Bearer blabla........bla
+
+	{
+		"password": "xxxxx"
+	}
