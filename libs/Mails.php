@@ -14,10 +14,36 @@ require_once ABSPATH . 'wp-includes/PHPMailer/PHPMailer.php';
 require_once ABSPATH . 'wp-includes/PHPMailer/SMTP.php';
 
 
-class Mails {
+class Mails 
+{
+    protected static $errors  = null; 
+    protected static $status  = null; 
+    protected static $options = [];
+    protected static $silent  = false;
+
+    static function errors(){
+        return static::$errors;
+    }
+
+    static function status(){
+        return (empty(static::$errors)) ? 'OK' : 'error';
+    }
+
+    // overide options
+    static function config(Array $options){
+        static::$options = $options;
+    }
+
+    static function silentDebug(bool $status = true){
+        Mails::config([
+            'SMTPDebug' => $status ? 4 : 0
+        ]);
+
+        static::$silent = $status;
+    }
 
     /*
-        Gmail => habilitar: <válido solo hasta marzo de 2022>
+        Gmail => habilitar:
 
         https://myaccount.google.com/lesssecureapps
     */
@@ -86,11 +112,34 @@ class Mails {
             }
         }
 		
+        if (static::$silent){
+            ob_start();
+        }
+		
         if (!$mail->send())
         {	
-            return $mail->ErrorInfo;
-        }else
-            return true;
+            static::$errors = $mail->ErrorInfo;
+
+            if (static::$silent){
+                Files::dump(static::$errors, 'dump.txt', true);
+            }
+
+            $ret = static::$errors;
+        }else{
+            if (static::$silent){
+                Files::dump(true, 'dump.txt', true);
+            }
+
+            static::$errors = null;
+            $ret =  true;
+        }        
+                 
+        if (static::$silent){
+            $content = ob_get_contents();
+            ob_end_clean();
+        }
+
+        return $ret;
 	}
 	
 

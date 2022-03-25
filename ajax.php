@@ -15,6 +15,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use boctulus\Auth4WP\libs\Auth;
 use boctulus\Auth4WP\libs\Url;
+use boctulus\Auth4WP\libs\Mails;
 
 /*
 	REST
@@ -399,6 +400,83 @@ function register(WP_REST_Request $req)
     }
 }
 
+function get_me(){
+    global $jwt;
+
+    $headers = apache_request_headers();
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+    $error = new WP_Error();
+
+    if (empty($auth)){
+        $error->add(401, "El header 'Authorization' con el 'access' token JWT es requerido");
+        return $error;
+    }
+
+    try {
+        list($token) = sscanf($auth, 'Bearer %s');
+
+        /*
+            array (
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+            'iat' => 1648083670,
+            'exp' => 1657083670,
+            'ip' => '127.0.0.1',
+            'user_agent' => 'PostmanRuntime/7.29.0',
+            'uid' => 9,
+            'roles' => 
+            array (
+                0 => 'editor',
+            ),
+        )
+        */
+        $payload = JWT::decode($token, new Key($jwt['access_token']['secret_key'], $jwt['access_token']['encryption']));
+
+        if (empty($payload)){
+            $error->add(401, 'Unauthorized.');
+            return $error;
+        }                     
+
+        if (empty($payload->uid)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if (empty($payload->roles)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if ($payload->exp < time()){
+            $error->add(401, 'Token expired, please log in');
+            return $error;
+        }
+        
+    } catch (\Exception $e){    
+        $error->add(500, $e->getMessage());
+        return $error;
+    }
+
+    $u = get_user_by('ID', $payload->uid);
+
+
+    $res = [
+        'uid'           => $payload->uid,
+        'username'      => $u->user_login,
+        'roles'         => $payload->roles,
+        'registered_at' => $u->user_registered
+    ];
+
+    $res = new WP_REST_Response($res);
+    $res->set_status(200);
+
+    return $res;
+}
+
+
 /*
     En principio solo para actualizar password
 
@@ -526,6 +604,14 @@ function rememberme(WP_REST_Request $req)
 
             $link = "$base_url/wp-json/v1/auth/change_pass_by_link/$email_token";
 
+            $body = "Hola!
+            <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
+
+            // Mails::sendMail($data['email'], '', 'Recuperación de password', $body);
+
+            // dd(Mails::status());
+            // dd(Mails::errors());
+
             dd("Enviando hiperlink: $link");
         }
 
@@ -545,6 +631,12 @@ function rememberme(WP_REST_Request $req)
     }
 }
 
+/*
+    Recibo un token y cambio la contraseña
+*/
+function change_pass_by_link(WP_REST_Request $req){
+    dd($req);
+}
 
 
 /*
@@ -587,4 +679,11 @@ add_action('rest_api_init', function () {
         'callback' => 'rememberme',
         'permission_callback' => '__return_true'
     ));
+
+    register_rest_route('auth/v1', '/change_pass_by_link', array(
+        'methods' => 'GET',
+        'callback' => 'change_pass_by_link',
+        'permission_callback' => '__return_true'
+    ));
+
 });
