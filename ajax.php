@@ -114,9 +114,9 @@ add_filter( 'rest_authentication_errors', function( $result ) {
 
 function token()
 {
-    global $jwt, $endpoints;
+    global $jwt;
 
-    $headers          = apache_request_headers();
+    $headers = apache_request_headers();
 
     // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
     $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
@@ -124,7 +124,7 @@ function token()
     $error = new WP_Error();
 
     if (empty($auth)){
-        $error->add(401, "El header 'Authorization' con el token JWT es requerido");
+        $error->add(401, "El header 'Authorization' con el 'fressh' token JWT es requerido");
         return $error;
     }
 
@@ -204,8 +204,74 @@ function token()
     return $res;
 }
 
-function me(){
-    $res = "Hola Alberto!";
+function get_me(){
+    global $jwt;
+
+    $headers = apache_request_headers();
+
+    // Expecting "Bearer eyJ0eXAiOiJKV1QiLC...."
+    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+    $error = new WP_Error();
+
+    if (empty($auth)){
+        $error->add(401, "El header 'Authorization' con el 'access' token JWT es requerido");
+        return $error;
+    }
+
+    try {
+        list($token) = sscanf($auth, 'Bearer %s');
+
+        /*
+            array (
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+            'iat' => 1648083670,
+            'exp' => 1657083670,
+            'ip' => '127.0.0.1',
+            'user_agent' => 'PostmanRuntime/7.29.0',
+            'uid' => 9,
+            'roles' => 
+            array (
+                0 => 'editor',
+            ),
+        )
+        */
+        $payload = JWT::decode($token, new Key($jwt['access_token']['secret_key'], $jwt['access_token']['encryption']));
+
+        if (empty($payload)){
+            $error->add(401, 'Unauthorized.');
+            return $error;
+        }                     
+
+        if (empty($payload->uid)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if (empty($payload->roles)){
+            $error->add(401, 'Unauthorized..');
+            return $error;
+        }
+
+        if ($payload->exp < time()){
+            $error->add(401, 'Token expired, please log in');
+            return $error;
+        }
+        
+    } catch (\Exception $e){    
+        $error->add(500, $e->getMessage());
+        return $error;
+    }
+
+    $u = get_user_by('ID', $payload->uid);
+
+    $res = [
+        'uid'           => $payload->uid,
+        'username'      => $u->user_login,
+        'roles'         => $payload->roles,
+        'registered_at' => $u->user_registered
+    ];
 
     $res = new WP_REST_Response($res);
     $res->set_status(200);
@@ -433,15 +499,15 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ));
 
-    register_rest_route('auth/v1', '/me', array(
-        'methods' => 'POST',
-        'callback' => 'me',
-        'permission_callback' => '__return_true'
-    ));
-
     register_rest_route('auth/v1', '/token', array(
         'methods' => 'POST',
         'callback' => 'token',
+        'permission_callback' => '__return_true'
+    ));
+
+    register_rest_route('auth/v1', '/me', array(
+        'methods' => 'GET',
+        'callback' => 'get_me',
         'permission_callback' => '__return_true'
     ));
 });

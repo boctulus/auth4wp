@@ -158,4 +158,30 @@ Se devolverá un nuevo acccess token en un JSON como este:
         "message": "Renovación de tokens exitosa"
     }
 
-Importante: no confunda el refresh con el access token porque son cifrados con llaves distintas y no son intercambiables.
+Importante: no confunda el refresh con el access token porque son cifrados con llaves distintas y no son intercambiables. De hacerlo obtendrá el mensaje de error:
+
+    "Signature verification failed"
+
+La única finalidad del refresh token es renovar el access token. Solo es aceptado en el endpoint  /wp-json/auth/v1/token
+
+
+# Obtener datos de usuario
+
+Para recuperar información básica (password claramente no por seguridad) de un usuario se provee del endpoint /wp-json/auth/v1/me
+
+Ej:
+
+    GET /wp-json/auth/v1/me
+
+    Authorization: Bearer eyJ0eXAi....4cHOYwi4
+
+Rta:
+
+    {
+        "uid": 13,
+        "username": "dios1",
+        "roles": [
+            "customer"
+        ],
+        "registered_at": "2022-03-25 19:41:20"
+    }
