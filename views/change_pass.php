@@ -17,9 +17,7 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="login()">Login</button>
 	</div>
 
-	<div class="mt-3" style="text-align:right;">
-		Ya registrado? <a href="auth/login">Ingrese</a>
-	</div>
+	Recordó su password? <a href="auth/login">Ingrese</a>
 </form>
 		
 	

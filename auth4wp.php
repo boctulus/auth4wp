@@ -164,6 +164,25 @@ function shortcode_common(){
 			}
 		}
 
+		function password_show_hide(id = 'password'){
+			let icon_s  = document.getElementById('show_eye');
+			let icon_h  = document.getElementById('hide_eye');
+			let input   = document.getElementById(id);
+			let input2  = input.cloneNode(false);
+
+			if (input.type == 'password'){
+				input2.type = 'text';
+				icon_s.classList.add('d-none');
+				icon_h.classList.remove('d-none');
+			} else {
+				input2.type = 'password';
+				icon_h.classList.add('d-none');
+				icon_s.classList.remove('d-none');
+			}
+
+			input.parentNode.replaceChild(input2,input);
+		}
+
 		// On DOM is load
 		document.addEventListener('DOMContentLoaded', () => 
     	{	

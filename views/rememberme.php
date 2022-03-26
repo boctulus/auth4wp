@@ -9,6 +9,6 @@
         <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
     </div>
 
-    No registrado? <a href="login/register">regístrese</a>
+    Recordó su password? <a href="auth/login">Ingrese</a>
 </form>
 
