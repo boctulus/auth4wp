@@ -4,8 +4,8 @@ namespace boctulus\Auth4WP;
 
 /*
 Plugin Name: Auth4WP
-Description: Plugin que provee autenticación alternativa
-Version: 1.0.0
+Description: Plugin que provee autenticación y securitización de rutas
+Version: 1.0.1
 Author: boctulus@gmail.com <Pablo>
 */
 
@@ -81,6 +81,76 @@ add_action( 'wp_enqueue_scripts', 'boctulus\Auth4WP\enqueues');
 
 function shortcode_common(){
 	?>
+	<style>
+		.login-form {
+			width: 340px;
+			margin: 30px auto;
+		}
+
+		.login-form form {
+			margin-bottom: 15px;
+			background: #f7f7f7;
+			box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+			padding: 30px;
+		}
+
+		.login-form h2 {
+			margin: 0 0 15px;
+		}
+
+		.login-form .hint-text {
+			color: #777;
+			padding-bottom: 15px;
+			text-align: center;
+		}
+
+		.form-control, .btn {
+			min-height: 50px;
+			border-radius: 2px;
+			font-size: 18px;
+		}
+
+		.login-btn {        
+			font-weight: bold;
+		}
+
+		.or-seperator {
+			font-size: 18px;
+			margin: 20px 0 10px;
+			text-align: center;
+			border-top: 1px solid #ccc;
+		}
+
+		.or-seperator i {
+			padding: 0 10px;
+			background: #fff;
+			position: relative;
+			top: -15px;
+			z-index: 1;
+		}
+
+		.social-btn .btn {
+			margin: 12px 0;
+			font-size: 18px;
+			text-align: left; 
+			line-height: 40px;       
+		}
+
+		.social-btn .btn i {
+			float: left;
+			margin: 11px 15px  0 5px;
+			min-width: 15px;
+		}
+
+		.input-group-addon .fa{
+			font-size: 20px;
+		}    
+
+		.card-primary.card-outline {
+			border-top: 3px solid #007bff;
+		}
+	</style>
+
 	<script>		
 		function parseJSON(str) {
 			try {
@@ -124,7 +194,7 @@ function uth4wp_registration($atts = []) {
 	// require __DIR__ . '/config.php';
 	shortcode_common();
 
-	include __DIR__ . '/views/login.php';
+	include __DIR__ . '/views/register.php';
 }
 
 function uth4wp_rememberme($atts = []) { 
@@ -135,50 +205,51 @@ function uth4wp_rememberme($atts = []) {
 	// require __DIR__ . '/config.php';
 	shortcode_common();
 
-	include __DIR__ . '/views/login.php';
+	include __DIR__ . '/views/rememberme.php';
 }
 	
 // register shortcodes
 add_shortcode('uth4wp_login', 'boctulus\Auth4WP\uth4wp_login');
-add_shortcode('uth4wp_login', 'boctulus\Auth4WP\uth4wp_registration');
-add_shortcode('uth4wp_login', 'boctulus\Auth4WP\uth4wp_rememberme');
+add_shortcode('uth4wp_registration', 'boctulus\Auth4WP\uth4wp_registration');
+add_shortcode('uth4wp_rememberme', 'boctulus\Auth4WP\uth4wp_rememberme');
 
 
 /*
 	Envio del correos en su template
 */
 
-function send_email_verification_template(Array $data){
-	// ...
+// function send_email_verification_template(Array $data){
+// 	// ...
 
-	// podría abstraerse como view(Array $data)
-	ob_start();
-	include __DIR__ . '/views/email_verification_template.php';
-	$content = ob_get_contents();
-	ob_end_clean();
+// 	// podría abstraerse como view(Array $data)
+// 	ob_start();
+// 	include __DIR__ . '/views/email_verification_template.php';
+// 	$content = ob_get_contents();
+// 	ob_end_clean();
 
-	$email    = $data['to_email'];
-	$name     = $data['to_name'];
-	$subject  = $data['subject'];
+// 	$email    = $data['to_email'];
+// 	$name     = $data['to_name'];
+// 	$subject  = $data['subject'];
 
-	Mails::sendMail($email, $name, $subject, $content);
-}
+// 	Mails::sendMail($email, $name, $subject, $content);
+// }
 
-function send_email_rememberme_template(Array $data){
-	// ...
 
-	// podría abstraerse como view(Array $data)
-	ob_start();
-	include __DIR__ . '/views/email_rememberme_template.php';
-	$content = ob_get_contents();
-	ob_end_clean();
+// function send_email_rememberme_template(Array $data){
+// 	// ...
 
-	$email    = $data['to_email'];
-	$name     = $data['to_name'];
-	$subject  = $data['subject'];
+// 	// podría abstraerse como view(Array $data)
+// 	ob_start();
+// 	include __DIR__ . '/views/email_rememberme_template.php';
+// 	$content = ob_get_contents();
+// 	ob_end_clean();
 
-	Mails::sendMail($email, $name, $subject, $content);
-}
+// 	$email    = $data['to_email'];
+// 	$name     = $data['to_name'];
+// 	$subject  = $data['subject'];
+
+// 	Mails::sendMail($email, $name, $subject, $content);
+// }
 
 
 if (isset($date_timezone)){
