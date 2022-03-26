@@ -154,7 +154,7 @@ function send_email_verification_template(Array $data){
 	$name     = $data['to_name'];
 	$subject  = $data['subject'];
 
-	$res = Mails::sendMail($email, $name, $subject, $content);
+	Mails::sendMail($email, $name, $subject, $content);
 }
 
 function send_email_rememberme_template(Array $data){
@@ -170,13 +170,6 @@ function send_email_rememberme_template(Array $data){
 	$name     = $data['to_name'];
 	$subject  = $data['subject'];
 
-	$res = Mails::sendMail($email, $name, $subject, $content);
+	Mails::sendMail($email, $name, $subject, $content);
 }
-
-
-
-
-
-
-
 

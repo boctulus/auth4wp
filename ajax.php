@@ -576,8 +576,6 @@ function patch_me(WP_REST_Request $req){
 
 function rememberme(WP_REST_Request $req)
 {
-    global $jwt;
-
     $data = $req->get_body();
 
     try {
@@ -603,15 +601,13 @@ function rememberme(WP_REST_Request $req)
 
             $link = "$base_url/wp-json/auth/v1/change_pass_by_link/$email_token";
 
-            $body = "Hola!
+            $email_body = "Hola!
             <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
 
-            Mails::sendMail($data['email'], '', 'Recuperación de password', $body);
+            $email_to    = $data['email'];
+            $email_title = 'Recuperación de password';
 
-            // dd(Mails::status());
-            // dd(Mails::errors());
-
-            //dd("Enviando hiperlink: $link");
+            Mails::sendMail($email_to, '', $email_title, $email_body);
         }
 
         $res = [
