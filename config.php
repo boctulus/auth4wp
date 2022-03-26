@@ -65,11 +65,13 @@ $jwt = [
 
     'email_token' => [
         'secret_key'        => TOKENS_EMAIL_SECRET_KEY,
-        'expires_in'        => 7 * 24 * 3600,
+        'expires_in'        => 1 * 24 * 3600,
         'encryption'        => 'HS256'
     ],
-
 ];
+
+// Comentar esta línea sino desea forzar huso horario
+$date_timezone = 'America/Bogota';
 
 /*
     Mail configuration

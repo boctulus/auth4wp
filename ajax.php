@@ -16,6 +16,7 @@ use Firebase\JWT\Key;
 use boctulus\Auth4WP\libs\Auth;
 use boctulus\Auth4WP\libs\Url;
 use boctulus\Auth4WP\libs\Mails;
+use boctulus\Auth4WP\libs\System;
 
 /*
 	REST
@@ -576,6 +577,8 @@ function patch_me(WP_REST_Request $req){
 
 function rememberme(WP_REST_Request $req)
 {
+    global $wpdb, $jwt;
+
     $data = $req->get_body();
 
     try {
@@ -607,7 +610,19 @@ function rememberme(WP_REST_Request $req)
             $email_to    = $data['email'];
             $email_title = 'Recuperación de password';
 
-            Mails::sendMail($email_to, '', $email_title, $email_body);
+            $args = [
+                $email_to, '', $email_title, $email_body
+            ];
+
+            $secs = $jwt['email_token']['expires_in'];
+
+            $data = [
+                'data' => json_encode($args),
+                'expiration_at' => (new \DateTime("NOW +$secs second"))->format('Y-m-d H:i:s')
+            ]; 
+
+            // ALMACENAR EN LA DB !!!
+            $wpdb->insert($wpdb->prefix . 'enqueued_mails', $data, array( '%s', '%s' ));
         }
 
         $res = [

@@ -26,6 +26,20 @@ define('MAIL_DEFAULT_FROM_ADDR', 'xxxxxxxxx@gmail.com');
 define('MAIL_DEFAULT_FROM_NAME', 'No responder');
 
 
+El envio de correos debería ser asíncrono para no dejar colgada la petición y por tanto Ud. debe configurar un CRONJOB en el servidor.
+
+
+Tiene dos posibilidades:
+
+1) Hacer un request a http://su-sitio.com?send_emails=1
+
+2) Programar el cron para que ejecute:
+
+    php php {ruta-al-wordpress}/wp-content/plugins/auth4wp/email_cron.php
+
+
+Claves para el cifrado de tokens
+
 También se requiere incluir las keys para generar los "hash" en el wp-config.php:
 
 EJ:

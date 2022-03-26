@@ -18,7 +18,9 @@ use boctulus\Auth4WP\libs\Files;
 use boctulus\Auth4WP\libs\Debug;
 use boctulus\Auth4WP\libs\Mails;
 use boctulus\Auth4WP\libs\Request;
+use boctulus\Auth4WP\libs\Url;
 use boctulus\Auth4WP\libs\Auth;
+use boctulus\Auth4WP\libs\System;
 
 /*
 	Evidenciar errores
@@ -31,6 +33,7 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY){
 	error_reporting(E_ALL);
 }
 
+require_once __DIR__ . '/email_cron.php';
 require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Files.php';
@@ -38,9 +41,13 @@ require_once __DIR__ . '/libs/Request.php';
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Arrays.php';
 require_once __DIR__ . '/libs/Mails.php';
+require_once __DIR__ . '/libs/System.php';
 require_once __DIR__ . '/ajax.php';
 
 require __DIR__ . '/config.php';
+
+// New table
+require_once 'installer.php';
 
 
 if (!function_exists('dd')){
@@ -172,4 +179,42 @@ function send_email_rememberme_template(Array $data){
 
 	Mails::sendMail($email, $name, $subject, $content);
 }
+
+
+if (isset($date_timezone)){
+	date_default_timezone_set($date_timezone);
+}
+
+
+
+// add_action( 'init', function () {
+// 	if ( ! wp_next_scheduled( 'do_single_action' ) ) {
+// 		wp_schedule_single_event( time() + 5, 'do_single_action' );
+// 	}
+
+// 	add_action( 'do_single_action', 'boctulus\Auth4WP\do_this_once' );
+
+// 	/*
+// 		Envio de correos
+// 	*/
+// 	function do_this_once() {
+// 		global $wpdb;
+
+// 		try {
+// 			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails ORDER BY id DESC LIMIT 10", ARRAY_A);
+
+// 			foreach ($results as $r){
+// 				$args = json_decode($r['data'], true);
+// 				$wpdb->delete("{$wpdb->prefix}enqueued_mails", array( 'id' => $r['id'] ) );
+			
+// 				Mails::sendMail(...$args);
+// 				sleep(2);
+// 			}
+// 		} catch (\Exception $e){
+// 			Files::logger($e->getMessage());
+// 		}
+
+// 	}
+// } );
+
 

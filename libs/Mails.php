@@ -9,17 +9,22 @@ namespace boctulus\Auth4WP\libs;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
+use boctulus\Auth4WP\libs\Files;
+
 require_once ABSPATH . 'wp-includes/PHPMailer/Exception.php';
 require_once ABSPATH . 'wp-includes/PHPMailer/PHPMailer.php';
 require_once ABSPATH . 'wp-includes/PHPMailer/SMTP.php';
 
+require_once __DIR__ . '/Files.php';
+
 
 class Mails 
 {
-    protected static $errors  = null; 
-    protected static $status  = null; 
-    protected static $options = [];
-    protected static $silent  = false;
+    protected static $errors      = null; 
+    protected static $status      = null; 
+    protected static $options     = [];
+    protected static $silent      = false;
+    protected static $debug_level = null;
 
     static function errors(){
         return static::$errors;
@@ -34,12 +39,34 @@ class Mails
         static::$options = $options;
     }
 
-    static function silentDebug(bool $status = true){
-        Mails::config([
-            'SMTPDebug' => $status ? 4 : 0
+    static function silentDebug($level = null){
+        global $simple_mail;
+
+        $config['email'] = $simple_mail;
+
+        $options = $config['email']['mailers'][ $config['email']['mailer_default'] ];
+
+        if (isset($options['SMTPDebug']) && $options['SMTPDebug'] != 0){
+            $default_debug_level = $options['SMTPDebug'];
+        }
+
+        $level = static::$debug_level ?? $level ?? $default_debug_level ?? 4;
+
+        static::config([
+            'SMTPDebug' => $level
         ]);
 
-        static::$silent = $status;
+        static::$silent = true;
+    }
+
+    /*
+        level 1 = client; will show you messages sent by the client
+        level 2  = client and server; will add server messages, it’s the recommended setting.
+        level 3 = client, server, and connection; will add information about the initial information, might be useful for discovering STARTTLS failures
+        level 4 = low-level information. 
+    */
+    static function debug(int $level = 4){
+        static::$debug_level = $level;
     }
 
     /*
@@ -65,8 +92,14 @@ class Mails
         $mail->isSMTP();
 
         $mailer = $config['email']['mailer_default'];
-        
-        foreach ($config['email']['mailers'][$mailer] as $k => $prop){
+
+        $options = array_merge($config['email']['mailers'][$mailer], static::$options);
+
+        if (static::$debug_level !== null){
+            $options['SMTPDebug'] = static::$debug_level;
+        }
+
+        foreach ($options as $k => $prop){
 			$mail->{$k} = $prop;
         }	
     
@@ -111,7 +144,7 @@ class Mails
                 $mail->addBCC($bcc_account);
             }
         }
-		
+
         if (static::$silent){
             ob_start();
         }
@@ -141,6 +174,4 @@ class Mails
 
         return $ret;
 	}
-	
-
 }

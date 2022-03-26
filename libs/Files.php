@@ -17,13 +17,17 @@ class Files
 		Escribe archivo o falla.
 	*/
 	static function writeOrFail(string $path, string $string, int $flags = 0){
+		if (empty($path)){
+			throw new \InvalidArgumentException("path is empty");
+		}
+
 		if (is_dir($path)){
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
 		}
 
 		$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
 
-		static::writableOrFail($dir);
+		static::writableOrFail($dir, "$path is not writable");
 
 		$ok = (bool) @file_put_contents($path, $string, $flags);
 
@@ -55,7 +59,7 @@ class Files
 		return $ok;
 	}
 
-	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
+	static function writableOrFail(string $path, string $error = "'%s' is not writable"){
 		if (!is_writable($path)){
 			throw new \Exception(sprintf($error, $path));
 		}
@@ -69,16 +73,16 @@ class Files
 		
 		$data = date("Y-m-d H:i:s"). "\t" .$data;
 
-		return static::writeOrFail($path, $data. "\n", FILE_APPEND);
+		return static::write($path, $data. "\n", FILE_APPEND);
 	}
 
 	static function dump($object, $filename = 'log.txt', $append = false){
 		$path = realpath(__DIR__ . '/../logs/'. $filename);
 
 		if ($append){
-			static::writeOrFail($path, var_export($object,  true) . "\r\n", FILE_APPEND);
+			static::write($path, var_export($object,  true) . "\r\n", FILE_APPEND);
 		} else {
-			static::writeOrFail($path, var_export($object,  true) . "\r\n" );
+			static::write($path, var_export($object,  true) . "\r\n" );
 		}		
 	}
 
