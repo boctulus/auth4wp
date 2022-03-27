@@ -73,6 +73,9 @@ $jwt = [
 // Comentar esta línea sino desea forzar huso horario
 $date_timezone = 'America/Bogota';
 
+// Sete esta variable si desea redirección luego del login
+$login_redirection = get_site_url();
+
 /*
     Mail configuration
 */

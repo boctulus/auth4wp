@@ -152,6 +152,8 @@ function shortcode_common(){
 	</style>
 
 	<script>		
+		const base_url = '<?= get_site_url() ?>'
+
 		function parseJSON(str) {
 			try {
 				return JSON.parse(str);
@@ -189,6 +191,15 @@ function shortcode_common(){
         	// ..
         });
 
+		function displayError(msg) {
+			if (msg) {    
+				$("#error").text(msg);    
+				$("#error").removeClass("d-none");  
+			}  
+			else {    
+				$("#error").addClass("d-none");  
+			}
+		}
 	</script>
 	<?php
 }

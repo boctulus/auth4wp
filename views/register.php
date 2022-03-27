@@ -5,8 +5,12 @@
 	
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-user"></i></span><input class="form-control" type="text" id="username" placeholder="Nombre de usuario" required="required"></input></div>
 	
-	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="password" placeholder="Password" required="required"></input></div>
-	
+	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="password" placeholder="Password" required="required"></input><span class="input-group-text" onclick="password_show_hide_pc();">
+			<i class="fas fa-eye" id="show_eye"></i>
+			<i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+		</span>
+	</div>
+
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="passwordconfirmation" placeholder="Password confirmación" required="required" name="passwordconfirmation"></input></div>
 	
 	<div style="margin-bottom:1em;">
@@ -21,5 +25,12 @@
 		Ya registrado? <a href="auth/login">Ingrese</a>
 	</div>
 </form>
+
+<script>
+	function password_show_hide_pc(){
+		password_show_hide(); 
+		password_show_hide('passwordconfirmation')
+	}
+</script>
 		
 	
