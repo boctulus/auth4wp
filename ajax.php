@@ -213,6 +213,8 @@ function token()
 
 function login(WP_REST_Request $req)
 {
+    //throw new \Exception("foo");
+
     global $jwt;
 
     $data = $req->get_body();

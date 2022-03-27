@@ -77,6 +77,18 @@ $date_timezone = 'America/Bogota';
 $login_redirection = get_site_url();
 
 /*
+    Por favor si desea usar los [shortcodes] registre aquí las urls de cada página en WordPress
+    a fin de poder navegar entre ellos.
+*/
+
+$url_pages = [
+    'login'      => '/index.php/login',
+    'register'   => '/index.php/register',
+    'rememberme' => '/index.php/recordar-contrasena'
+];
+
+
+/*
     Mail configuration
 */
 

@@ -55,6 +55,10 @@
 			body: formBody
 		})
 		.then(function(response) {
+			// if (response == null){
+			// 	return null;
+			// }
+
 			return response.json();
 		})
 		.then(function(data) {
@@ -77,10 +81,10 @@
 			}
 
 		})
-		.catch((error) => {
-			console.log(error)
+		.catch(e => {
+			console.log(e);
 		});
-
+		
 		return false;
 	}
 </script>

@@ -33,7 +33,7 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY){
 	error_reporting(E_ALL);
 }
 
-require_once __DIR__ . '/email_cron.php';
+require_once __DIR__ . '/email_cron.php'; // cron
 require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Files.php';
@@ -154,7 +154,7 @@ function shortcode_common(){
 	<script>		
 		const base_url = '<?= get_site_url() ?>'
 
-		function parseJSON(str) {
+		function parseJSON(str, default_val = null) {
 			try {
 				return JSON.parse(str);
 			}
@@ -162,7 +162,7 @@ function shortcode_common(){
 				console.log('PARSING ERROR for ' + str);
 				console.log(e);
 				// Return a default object, or null based on use case.
-				return null
+				return default_val;
 			}
 		}
 
@@ -287,10 +287,9 @@ if (isset($date_timezone)){
 }
 
 
-
 // add_action( 'init', function () {
 // 	if ( ! wp_next_scheduled( 'do_single_action' ) ) {
-// 		wp_schedule_single_event( time() + 5, 'do_single_action' );
+// 		wp_schedule_single_event( time() + 1, 'do_single_action' );
 // 	}
 
 // 	add_action( 'do_single_action', 'boctulus\Auth4WP\do_this_once' );
@@ -316,6 +315,16 @@ if (isset($date_timezone)){
 // 		}
 
 // 	}
-// } );
+// } );   
 
 
+/*
+	Completo urls 
+*/
+foreach ($url_pages as $ix => $page){
+	$pages[$ix] = trim($page, '/');
+
+	if (!Strings::startsWith('http', $pages[$ix])){
+		$pages[$ix] = get_site_url() . '/' . $pages[$ix];
+	} 
+}

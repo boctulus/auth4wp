@@ -16,6 +16,7 @@ if ( $wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") != $table_name ) {
             `tries` INT(11) DEFAULT 0,  
             `last_try_at` DATETIME DEFAULT '0000-00-00 00:00:00',
             `created_at` DATETIME DEFAULT NOW(),
+            `locked_at` DATETIME DEFAULT '0000-00-00 00:00:00',
             `expiration_at` DATETIME NOT NULL
     ) $charset_collate;";
 

@@ -5,7 +5,7 @@
 
 	Programe un cron para la ejecución de este script. Tiene dos posibilidades:
 
-	1) Hacer un request a http://su-sitio.com?send_emails=1
+	1) Hacer un request a http://su-sitio.com?sendmail=1
 
 	2) Programar el cron para que ejecute:
 	
@@ -33,21 +33,60 @@ require __DIR__ . '/config.php';
 
 global $wpdb;
 
-if (php_sapi_name() == 'cli'){
+$cli = (php_sapi_name() == 'cli');
+
+if ($cli){
 	$go = true;
 } else {
 	$params = Url::queryString();
-	$go = isset($params['send_emails']);
+	$go = isset($params['sendmail']);
 }
 
 if ($go){
-	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails ORDER BY id ASC LIMIT 10", ARRAY_A);
+	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails WHERE locked_at = '0000-00-00 00:00:00' ORDER BY id ASC LIMIT 10", ARRAY_A);
 
 	foreach ($results as $r){
 		$args = json_decode($r['data'], true);
-		$wpdb->delete("{$wpdb->prefix}enqueued_mails", array( 'id' => $r['id'] ) );
 
-		Mails::sendMail(...$args);
+		$wpdb->update("{$wpdb->prefix}enqueued_mails", 
+			[
+				'locked_at' => (new \DateTime("NOW"))->format('Y-m-d H:i:s')
+			],
+
+			[ 
+				'id' => $r['id'] 
+			]
+	 	);
+
+		try {
+			Mails::silentDebug();
+
+			if ($cli){
+				Mails::debug(4);
+			}
+			
+			Mails::sendMail(...$args);
+
+			if (!empty(Mails::errors())){
+				if ($cli){
+					dd(Mails::errors(), 'Errors');
+				} 	
+
+				throw new \Exception("Errores enviando email");
+			}
+
+		} catch (\Exception $e) {
+
+			if ($cli){
+				dd($e->getMessage());
+			}
+
+			Files::logger($e->getMessage());
+			exit;
+		}
+
+		$wpdb->delete("{$wpdb->prefix}enqueued_mails", [ 'id' => $r['id'] ] );
+		
 	}
 
 	exit;
