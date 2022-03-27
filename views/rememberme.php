@@ -1,6 +1,10 @@
 <!-- Rememberme -->
 
-<form>
+<?php
+	global $url_pages;
+?>
+
+<div>
     <div style="text-align:right; margin-bottom:1em;">
         Tiene cuenta? <a href="login">Ingresar</a>
     </div>
@@ -9,6 +13,6 @@
         <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
     </div>
 
-    Recordó su password? <a href="auth/login">Ingrese</a>
-</form>
+    No tiene cuenta? <a href="<?= $url_pages['register']  ?>">Regístrese</a>
+</div>
 

@@ -82,9 +82,9 @@ $login_redirection = get_site_url();
 */
 
 $url_pages = [
-    'login'      => '/index.php/login',
-    'register'   => '/index.php/register',
-    'rememberme' => '/index.php/recordar-contrasena'
+    'login'      => 'index.php/login',
+    'register'   => 'index.php/registro',
+    'rememberme' => 'index.php/recordar-contrasena'
 ];
 
 

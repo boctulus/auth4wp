@@ -4,6 +4,10 @@
 	const login_redirection = '<?= $login_redirection ?? null ?>'	
 </script>
 
+<?php
+	global $url_pages;
+?>
+
 <div>
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-user"></i></span><input class="form-control" type="text" id="email_username" placeholder="email o username" required="required"></input></div>
 	
@@ -22,7 +26,7 @@
 	</div>
 
 	<div class="mt-3" style="text-align:right;">
-		No registrado? <a href="auth/register">Regístrese</a>
+		No registrado? <a href="<?= $url_pages['register'] ?>">Regístrese</a>
 	</div>
 </div>
 		

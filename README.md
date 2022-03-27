@@ -54,10 +54,19 @@ define('TOKENS_REFSH_SECRET_KEY', '^W~~W?]]t@U|~yKi`b$;:#"F(HD`@K:[~|>d}{o%&{^M^
 
 define('TOKENS_EMAIL_SECRET_KEY','ZTbD:||:"%;(]]I{Q[*Q"[}=J`.~z#j*.-Vt"]*!~>#k}`!~^^%[?>.T_}] }@:<|=/{]y~[^ @)?WV^)+c$"l+&@.\?Nx~$_Gx=%_=Lu:&?!~\{{?%*?}IV~@:d:|][:/;luvS"*h{"n^\]/?[:@(:SM+~~)$vh\%_Q:[[M(~xx.)%|}),c,{$gw#{~h>:@-B|_`(L~\%:[r]$=`+:]St#!}%#@|?{[m@;("[^!Y_TbSNl-k{.}.vO:)"`}:|%G:/+P$fG(W>G[\|="z`|d|~fC+kLe[~+E~}}#`$>: }d"\Z)R}f@Y&X..d{/px~~_zc]+{d]##|a$M@,P>~U`A!CdR*:!`~?)|\mVB!|+ uQ*l*\;|*_zc"*d}+q;s{@C()V$vIv*=B[{$ `S!&+`_t;{u:&_ `DU|BD@|;"NS.)>+^&@ssm\^%#h+\{{&fnN@![%#@/[F.>),PT\i~n|^$~$&I\;=;U}"N.(LI&{m&o&S >X`$-<|td~-Kyx].h?/O');
 
-
 ### Shortcode
 
 Los shortcodes son [auth4wp_login], [auth4wp_registration] y [auth4wp_rememberme]
+
+Si desea usar los [shortcodes] debe registar las urls de cada página en WordPress en el config.php a fin de poder navegar entre ellos.
+
+Ej:
+
+$url_pages = [
+    'login'      => '/index.php/login',
+    'register'   => '/index.php/register',
+    'rememberme' => '/index.php/recordar-contrasena'
+];
 
 
 ### Notas

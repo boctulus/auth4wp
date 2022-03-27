@@ -321,10 +321,10 @@ if (isset($date_timezone)){
 /*
 	Completo urls 
 */
-foreach ($url_pages as $ix => $page){
-	$pages[$ix] = trim($page, '/');
+// foreach ($url_pages as $ix => $page){
+// 	$pages[$ix] = trim($page, '/');
 
-	if (!Strings::startsWith('http', $pages[$ix])){
-		$pages[$ix] = get_site_url() . '/' . $pages[$ix];
-	} 
-}
+// 	if (!Strings::startsWith('http', $pages[$ix])){
+// 		$pages[$ix] = get_site_url() . '/' . $pages[$ix];
+// 	} 
+// }

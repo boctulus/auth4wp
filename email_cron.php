@@ -27,9 +27,6 @@ require_once __DIR__ . '/libs/Url.php';
 
 require __DIR__ . '/config.php';
 
-// Mails::debug(4);
-// Mails::silentDebug();
-
 
 global $wpdb;
 
@@ -43,7 +40,10 @@ if ($cli){
 }
 
 if ($go){
-	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails WHERE locked_at = '0000-00-00 00:00:00' ORDER BY id ASC LIMIT 10", ARRAY_A);
+	// La idea es no superar el max_execution_time que en muchos casos (hostings compartidos) es inmutable.
+	$limit = $cli ? '' : ' LIMIT 5';
+
+	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails WHERE locked_at = '0000-00-00 00:00:00' ORDER BY id ASC $limit", ARRAY_A);
 
 	foreach ($results as $r){
 		$args = json_decode($r['data'], true);
@@ -59,11 +59,8 @@ if ($go){
 	 	);
 
 		try {
+			Mails::debug(4);
 			Mails::silentDebug();
-
-			if ($cli){
-				Mails::debug(4);
-			}
 			
 			Mails::sendMail(...$args);
 

@@ -1,6 +1,10 @@
 <!-- Sign up -->
 
-<form>
+<?php
+	global $url_pages;
+?>
+
+<div>
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-user"></i></span><input class="form-control" type="text" id="email" placeholder="E-mail" required="required"></input></div>
 	
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-user"></i></span><input class="form-control" type="text" id="username" placeholder="Nombre de usuario" required="required"></input></div>
@@ -17,7 +21,7 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="login()">Login</button>
 	</div>
 
-	Recordó su password? <a href="auth/login">Ingrese</a>
-</form>
+	Recordó su password? <a href="<?= $url_pages['login'] ?>">Ingrese</a>
+</div>
 		
 	
