@@ -25,7 +25,6 @@ use boctulus\Auth4WP\libs\System;
 
 add_filter( 'rest_authentication_errors', function( $result ) {
     global $config;
-
     $jwt = $config['jwt'];
 
     $headers          = apache_request_headers();
@@ -118,7 +117,8 @@ add_filter( 'rest_authentication_errors', function( $result ) {
 
 function token()
 {
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $headers = apache_request_headers();
 
@@ -215,9 +215,8 @@ function token()
 
 function login(WP_REST_Request $req)
 {
-    //throw new \Exception("foo");
-
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $data = $req->get_body();
 
@@ -313,7 +312,8 @@ function login(WP_REST_Request $req)
 
 function register(WP_REST_Request $req)
 {
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $data = $req->get_body();
 
@@ -322,7 +322,9 @@ function register(WP_REST_Request $req)
             throw new \Exception("No data");
         }
 
+        // dd($data);
         $data = Url::bodyDecode($data);
+        // dd($data);
 
         $error = new WP_Error();
 
@@ -405,7 +407,8 @@ function register(WP_REST_Request $req)
 }
 
 function get_me(){
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $headers = apache_request_headers();
 
@@ -487,7 +490,8 @@ function get_me(){
     Requiere del "refresh" token ***
 */
 function patch_me(WP_REST_Request $req){
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $headers = apache_request_headers();
 
@@ -581,7 +585,9 @@ function patch_me(WP_REST_Request $req){
 
 function rememberme(WP_REST_Request $req)
 {
-    global $wpdb, $jwt;
+    global $wpdb, $config;
+
+    $jwt = $config['jwt'];
 
     $data = $req->get_body();
 
@@ -649,7 +655,8 @@ function rememberme(WP_REST_Request $req)
     Recibo un token y cambio la contraseña
 */
 function change_pass_by_link(WP_REST_Request $req){
-    global $jwt;
+    global $config;
+    $jwt = $config['jwt'];
 
     $token = $req->get_param('token');
 

@@ -29,7 +29,7 @@
 		Ya registrado? <a href="<?= $config['url_pages']['login'] ?>">Ingrese</a>
 	</div>
 
-	<div id="error_box">
+	<div id="error_box" style="font-size:125%;">
 	</div>
 </div>
 
@@ -53,11 +53,16 @@
 
 		const url = base_url + '/wp-json/auth/v1/register';
 
+		const data = Object.keys( obj)
+		.map((key) => `${key}=${encodeURIComponent( obj[key])}`)
+		.join('&');
+
 		axios
-		.post(url, obj, {
+		.post(url, data, 
+		{
 			headers: {
-			Accept: "application/json",
-			"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 			},
 		})
 		.then(({data}) => {
@@ -82,20 +87,24 @@
 			if (error.response) {
 				// The request was made and the server responded with a status code
 				// that falls out of the range of 2xx
-				console.log(error.response.data);  ///  <--- mensaje de error
-				console.log(error.response.status);
-				console.log(error.response.headers);
+				//console.log(error.response.data);  ///  <--- mensaje de error
+				// console.log(error.response.status);
+				// console.log(error.response.headers);
+
+				addNotice(error.response.data.message, 'warning', 'error_box', true);
 			} else if (error.request) {
 				// The request was made but no response was received
 				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
 				// http.ClientRequest in node.js
-				console.log(error.request);
+				
+				//console.log(error.request);
 			} else {
 				// Something happened in setting up the request that triggered an Error
-				console.log('Error', error.message);
+				
+				//console.log('Error', error.message);
 			}
 
-			console.log(error.config);
+			//console.log(error.config);
 		});
 
 		return false;
