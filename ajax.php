@@ -602,41 +602,56 @@ function rememberme(WP_REST_Request $req)
         if (!isset($data['email'])) {
             $error->add(400, 'Email is required');
             return $error;
-        }
+        }     
 
         $u = get_user_by('email', $data['email']);
        
-         // envio del link al correo
-        if (!empty($u)){           
-            $email_token = Auth::gen_jwt_rememberme($u->ID);
+        if (empty($u)){
+            $error->add('general', 'Usuario no encontrado');
+            return $error;
+        }
 
-            // cambiado 28-marzo 11:56
-            $link = "{$config['url_pages']['rememberme_change_pass']}?token=$email_token";
+        $email_token = Auth::gen_jwt_rememberme($u->ID);
 
-            $email_body = "Hola!
-            <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
+        $link = "{$config['url_pages']['rememberme_change_pass']}?token=$email_token";
 
-            $email_to    = $data['email'];
-            $email_title = 'Recuperación de password';
+        $email_body = "Hola!
+        <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
 
-            $args = [
-                $email_to, '', $email_title, $email_body
-            ];
+        $email_to    = $data['email'];
+        $email_title = 'Recuperación de password';
 
-            $secs = $jwt['email_token']['expires_in'];
+        $args = [
+            $email_to, '', $email_title, $email_body
+        ];
 
-            $data = [
-                'data' => json_encode($args),
-                'expiration_at' => (new \DateTime("NOW +$secs second"))->format('Y-m-d H:i:s')
-            ]; 
+        $secs = $jwt['email_token']['expires_in'];
 
-            // ALMACENAR EN LA DB !!!
-            $wpdb->insert($wpdb->prefix . 'enqueued_mails', $data, array( '%s', '%s' ));
+        $data = [
+            'data' => json_encode($args),
+            'expiration_at' => (new \DateTime("NOW +$secs second"))->format('Y-m-d H:i:s')
+        ]; 
+
+        // ALMACENAR EN LA DB !!!
+        $ok = $wpdb->insert($wpdb->prefix . 'enqueued_mails', $data, array( '%s', '%s' ));
+
+        if (!$ok){
+            // $error->add(400, $wpdb->show_errors());
+            // return $error;
+
+            // dd($wpdb->last_error);
+            // dd($wpdb->show_errors());
+            // exit;
         }
 
         $res = [
-            'message' => 'You will receive a verification email with a hyperlink'
+            'message' => 'Recibirás un correo con un enlace',
+            'degug' => [
+                'data'  => $data,
+                //'error' => $wpdb->show_errors()
+            ]
         ];
+        
 
         $res = new WP_REST_Response($res);
         $res->set_status(200);

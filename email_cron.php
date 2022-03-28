@@ -60,7 +60,7 @@ if ($go){
 
 		try {
 			Mails::debug(4);
-			Mails::silentDebug();
+			//Mails::silentDebug();
 			
 			Mails::sendMail(...$args);
 

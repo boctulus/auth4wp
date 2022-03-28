@@ -86,6 +86,10 @@ function shortcode_common(){
 
 	?>
 	<style>
+		#error_box {
+			font-size:115%;
+		}
+
 		.login-form {
 			width: 340px;
 			margin: 30px auto;
@@ -157,10 +161,11 @@ function shortcode_common(){
 
 	<script>		
 		const base_url             = '<?= get_site_url() ?>';
-		const register_login       = '<?= $config['redirections']['login'] ?>'
+		const login_redirection    = '<?= $config['redirections']['login'] ?>'
 		const register_redirection = '<?= $config['redirections']['register'] ?>'
 		const password_changed_redirection = '<?= $config['redirections']['password_changed'] ?? null ?>'
-		
+		const token_renewal        = '<?= get_site_url() . "wp-json/auth/v1/token" ?>'
+
 
 		function parseJSON(str, default_val = null) {
 			try {

@@ -29,7 +29,7 @@
 		Ya registrado? <a href="<?= $config['url_pages']['login'] ?>">Ingrese</a>
 	</div>
 
-	<div id="error_box" style="font-size:125%;"></div>
+	<div id="error_box"</div>
 </div>
 
 <script>
@@ -81,7 +81,7 @@
 				
 			}else{	
 				console.log('Error (success)',data);	
-				jQuery('#loginError').text(data.responseJSON.error);
+				addNotice(data.message, 'warning', 'error_box', true);
 			}
 		})
 		.catch(function (error) {

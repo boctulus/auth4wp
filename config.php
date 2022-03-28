@@ -7,7 +7,7 @@
 
 
 /*
-    Idealmente se debería crear un endpoint donde pueda enviar los endpoints que serán securitizados y los roles admitidos
+    Se podría crear un endpoint donde pueda enviar los endpoints que serán securitizados y los roles admitidos
     
     POST /auth/v1/endpoints
 

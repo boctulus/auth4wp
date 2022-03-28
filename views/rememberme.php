@@ -8,24 +8,21 @@
     <div style="text-align:right; margin-bottom:1em;">
         Tiene cuenta? <a href="login">Ingresar</a>
     </div>
-    <div class="input-group input-group mb-3"><span class="input-group-text"><i class="fas fa-envelope"></i></span><input class="form-control" type="text" id="email_username" placeholder="E-mail o usuario" required="required"></input></div>
+    <div class="input-group input-group mb-3"><span class="input-group-text"><i class="fas fa-envelope"></i></span><input class="form-control" type="text" id="email" placeholder="E-mail" required="required"></input></div>
     <div class="form-group mb-3">
         <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
     </div>
 
     No tiene cuenta? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
 
-	<div id="error_box" style="font-size:125%;"></div>
+	<div id="error_box"></div>
 </div>
 
 <script>
 	function rememberme(){
 		var obj ={};
 		
-		if (jQuery('#email_username').val().match(/@/) != null)
-			obj['email']    = jQuery('#email_username').val();	
-		else
-			obj['username'] = jQuery('#email_username').val();
+		obj['email'] = jQuery('#email').val();
 
 		const url = base_url + '/wp-json/auth/v1/rememberme';
 
@@ -42,7 +39,7 @@
 			},
 		})
 		.then(({data}) => {
-			//console.log(data);
+			console.log(data);
 			addNotice(data.message, 'success', 'error_box', true);			
 		})
 		.catch(function (error) {

@@ -36,7 +36,7 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" id="sendBtn" onClick="change_pass()">Login</button>
 	</div>
 
-	<div id="error_box" style="font-size:125%;"></div>
+	<div id="error_box"></div>
 </div>
 
 <script>

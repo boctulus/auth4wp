@@ -29,12 +29,28 @@
 		No registrado? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
 	</div>
 
-	<div id="error_box" style="font-size:125%;"></div>
+	<div id="error_box"></div>
 </div>
 		
 <script>
 	function login(){
 		var obj ={};
+
+		let errors = false;
+
+		if (jQuery('#password').val() == ''){
+			errors = true;
+			addNotice('La contraseña es requerida', 'warning', 'error_box');
+		}
+
+		if (jQuery('#email').val() == ''){
+			errors = true;
+			addNotice('El correo es requerido', 'warning', 'error_box');
+		}
+
+		if (errors){
+			return false;
+		}
 		
 		if (jQuery('#email_username').val().match(/@/) != null)
 			obj['email']    = jQuery('#email_username').val();	
@@ -72,7 +88,7 @@
 				
 			}else{	
 				console.log('Error (success)',data);	
-				jQuery('#loginError').text(data.responseJSON.error);
+				addNotice(data.message, 'danger', 'error_box', true);
 			}
 		})
 		.catch(function (error) {
