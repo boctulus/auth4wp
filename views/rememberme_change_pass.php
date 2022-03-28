@@ -33,7 +33,7 @@
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="passwordconfirmation" placeholder="Password confirmación" required="required" name="passwordconfirmation"></input></div>
 	
 	<div class="form-group">
-		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" id="sendBtn" onClick="change_pass()">Login</button>
+		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" id="sendBtn" onClick="change_pass()">Enviar</button>
 	</div>
 
 	<div id="error_box"></div>
@@ -76,7 +76,7 @@
 			console.log(data);
 			// ....
 
-			if (typeof password_changed_redirection != 'undefined' && password_changed_redirection !== null){
+			if (typeof password_changed_redirection != 'undefined' && password_changed_redirection !== null && password_changed_redirection != ''){
 				window.location = password_changed_redirection;
 			} else {
 				addNotice('Cambio exitoso.', 'success', 'error_box', true);
