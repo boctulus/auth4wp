@@ -29,8 +29,7 @@
 		Ya registrado? <a href="<?= $config['url_pages']['login'] ?>">Ingrese</a>
 	</div>
 
-	<div id="error_box" style="font-size:125%;">
-	</div>
+	<div id="error_box" style="font-size:125%;"></div>
 </div>
 
 <script>
@@ -45,7 +44,9 @@
 		if (jQuery('#password').val() != jQuery('#passwordconfirmation').val()){
 			addNotice('Contraseñas no coinciden', 'warning', 'error_box', true);
 			return;
-		}else jQuery('#registerError').text('');
+		}else {
+			hideNotice('error_box');
+		}
 		
 		obj['email']    = jQuery('#email').val();
 		obj['username'] = jQuery('#username').val();
@@ -97,11 +98,13 @@
 				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
 				// http.ClientRequest in node.js
 				
-				//console.log(error.request);
+				console.log(error.request);
+				addNotice('El servidor no responde. Intente maś tarde.', 'danger', 'error_box', true);
 			} else {
 				// Something happened in setting up the request that triggered an Error
 				
-				//console.log('Error', error.message);
+				console.log('Error', error.message);
+				addNotice('Algo salió mal.', 'danger', 'error_box', true);
 			}
 
 			//console.log(error.config);

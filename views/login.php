@@ -5,7 +5,7 @@
 </script>
 
 <?php
-	global $url_pages;
+	global $config;
 ?>
 
 <div>
@@ -18,7 +18,7 @@
 	</div>
 	
 		<div style="margin-bottom:1em;">
-		<a href="login/rememberme">Recordar contraseña</a>
+		<a href="<?= $config['url_pages']['rememberme'] ?>">Recordar contraseña</a>
 	</div>
 
 	<div class="form-group">
@@ -28,6 +28,8 @@
 	<div class="mt-3" style="text-align:right;">
 		No registrado? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
 	</div>
+
+	<div id="error_box" style="font-size:125%;"></div>
 </div>
 		
 <script>
@@ -41,33 +43,22 @@
 		
 		obj['password'] = encodeURIComponent(jQuery('#password').val());
 
-		var formBody = [];
+		const url = base_url + '/wp-json/auth/v1/login';
 
-		for (var property in obj) {
-			var encodedKey = encodeURIComponent(property);
-			var encodedValue = encodeURIComponent(obj[property]);
-			formBody.push(encodedKey + "=" + encodedValue);
-		}
-		
-		formBody = formBody.join("&");
+		const data = Object.keys( obj)
+		.map((key) => `${key}=${encodeURIComponent( obj[key])}`)
+		.join('&');
 
-		fetch(base_url + '/wp-json/auth/v1/login', {
-			method: 'POST',
+		axios
+		.post(url, data, 
+		{
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 			},
-			body: formBody
 		})
-		.then(function(response) {
-			// if (response == null){
-			// 	return null;
-			// }
-
-			return response.json();
-		})
-		.then(function(data) {
-			//console.log(data);
-
+		.then(({data}) => {
+			console.log(data);
 			if (typeof data.access_token != 'undefined' && typeof data.refresh_token != 'undefined'){
 				localStorage.setItem('access_token',data.access_token);
 				localStorage.setItem('refresh_token',data.refresh_token);
@@ -75,18 +66,39 @@
 				localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
 				console.log('Tokens obtenidos');
 
-				if (login_redirection !== null){
-					window.location = base_url;
+				if (typeof register_redirection != 'undefined' && register_redirection!== null){
+					window.location = register_redirection;
 				}
 				
 			}else{	
 				console.log('Error (success)',data);	
-				$('#loginError').text(data.responseJSON.error);
+				jQuery('#loginError').text(data.responseJSON.error);
+			}
+		})
+		.catch(function (error) {
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				//console.log(error.response.data);  ///  <--- mensaje de error
+				// console.log(error.response.status);
+				// console.log(error.response.headers);
+
+				addNotice(error.response.data.message, 'warning', 'error_box', true);
+			} else if (error.request) {
+				// The request was made but no response was received
+				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+				// http.ClientRequest in node.js
+				
+				console.log(error.request);
+				addNotice('El servidor no responde. Intente maś tarde.', 'danger', 'error_box', true);
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				
+				console.log('Error', error.message);
+				addNotice('Algo salió mal.', 'danger', 'error_box', true);
 			}
 
-		})
-		.catch(e => {
-			console.log(e);
+			//console.log(error.config);
 		});
 		
 		return false;

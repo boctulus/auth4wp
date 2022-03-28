@@ -1,33 +1,40 @@
-<!-- Rememberme -->
+<!-- Rememberme => change password -->
 
 <?php
 	global $config;
 ?>
 
 <div>
-    <div style="text-align:right; margin-bottom:1em;">
-        Tiene cuenta? <a href="login">Ingresar</a>
-    </div>
-    <div class="input-group input-group mb-3"><span class="input-group-text"><i class="fas fa-envelope"></i></span><input class="form-control" type="text" id="email_username" placeholder="E-mail o usuario" required="required"></input></div>
-    <div class="form-group mb-3">
-        <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
-    </div>
-
-    No tiene cuenta? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
+	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="password" placeholder="Password" required="required"></input></div>
+	
+	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="passwordconfirmation" placeholder="Password confirmación" required="required" name="passwordconfirmation"></input></div>
+	
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="change_pass()">Login</button>
+	</div>
 
 	<div id="error_box" style="font-size:125%;"></div>
 </div>
 
 <script>
-	function rememberme(){
+	function password_show_hide_pc(){
+		password_show_hide(); 
+		password_show_hide('passwordconfirmation')
+	}
+
+	function change_pass(){
 		var obj ={};
 		
-		if (jQuery('#email_username').val().match(/@/) != null)
-			obj['email']    = jQuery('#email_username').val();	
-		else
-			obj['username'] = jQuery('#email_username').val();
+		if (jQuery('#password').val() != jQuery('#passwordconfirmation').val()){
+			addNotice('Contraseñas no coinciden', 'warning', 'error_box', true);
+			return;
+		}else {
+			hideNotice('error_box');
+		}
 
-		const url = base_url + '/wp-json/auth/v1/rememberme';
+		obj['email'] = jQuery('#email').val();
+
+		const url = base_url + '/wp-json/auth/v1/change_pass_process';
 
 		const data = Object.keys( obj)
 		.map((key) => `${key}=${encodeURIComponent( obj[key])}`)
@@ -42,8 +49,9 @@
 			},
 		})
 		.then(({data}) => {
-			//console.log(data);
-			addNotice(data.message, 'success', 'error_box', true);			
+			console.log(data);
+			// ....
+				
 		})
 		.catch(function (error) {
 			if (error.response) {
@@ -70,8 +78,11 @@
 
 			//console.log(error.config);
 		});
-		
+
 		return false;
 	}
 </script>
-
+		
+	
+		
+	

@@ -220,9 +220,9 @@ function shortcode_common(){
 
 		function hideNotice(id_container = 'alert_container', notice_id = null){
 			if (notice_id == null){
-				let div  = document.querySelector(`div#${id_container}`);
+				let div  = document.querySelector(`#${id_container}`);
 				div.innerHTML = '';
-				alert_container.classList.remove('mt-5');
+				div.classList.remove('mt-5');
 			} else {
 				document.getElementById(notice_id).remove();
 			}
@@ -305,11 +305,36 @@ function uth4wp_rememberme($atts = []) {
 
 	include __DIR__ . '/views/rememberme.php';
 }
+
+// No se utiliza de momento porque se muestra un alert.
+function uth4wp_rememberme_mail_sent($atts = []) { 
+	if (empty($atts)){
+		$atts = [];
+	}
+
+	// require __DIR__ . '/config.php';
+	shortcode_common();
+
+	include __DIR__ . '/views/rememberme_mail_sent.php';
+}
+
+function uth4wp_rememberme_change_pass($atts = []) { 
+	if (empty($atts)){
+		$atts = [];
+	}
+
+	// require __DIR__ . '/config.php';
+	shortcode_common();
+
+	include __DIR__ . '/views/rememberme_change_pass.php';
+}
+
 	
 // register shortcodes
 add_shortcode('uth4wp_login', 'boctulus\Auth4WP\uth4wp_login');
 add_shortcode('uth4wp_registration', 'boctulus\Auth4WP\uth4wp_registration');
 add_shortcode('uth4wp_rememberme', 'boctulus\Auth4WP\uth4wp_rememberme');
+add_shortcode('uth4wp_rememberme_change_pass', 'boctulus\Auth4WP\uth4wp_rememberme_change_pass');
 
 
 /*

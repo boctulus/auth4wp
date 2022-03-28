@@ -1,7 +1,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function(event) { 
-        var mail = window.atob(window.location.pathname.split('/')[3]);
+        let mail = window.atob(window.location.pathname.split('/')[3]);
+
+        console.log(mail);
         document.querySelector('#mail').innerText = mail;
     });    
 </script>

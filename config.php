@@ -87,7 +87,9 @@ $config = [
     'url_pages' => [
         'login'      => 'index.php/login',
         'register'   => 'index.php/registro',
-        'rememberme' => 'index.php/recordar-contrasena'
+        'rememberme' => 'index.php/recordar-contrasena',
+        //'rememberme_mail_sent' => 'index.php/recordar-contrasena-correo-enviado',
+        'rememberme_change_pass' => 'index.php/recordar-contrasena-cambiar-pass'
     ]
 ];
 
