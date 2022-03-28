@@ -39,7 +39,7 @@
 	}
 
 	function register(){
-		var obj ={};
+		let obj ={};
 		
 		if (jQuery('#password').val() != jQuery('#passwordconfirmation').val()){
 			addNotice('Contraseñas no coinciden', 'warning', 'error_box', true);

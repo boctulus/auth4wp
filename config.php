@@ -78,6 +78,7 @@ $config = [
     'redirections' => [
         'login'    => get_site_url(),
         'register' => get_site_url(),
+        //'password_changed' => '(opcional) a alguna url'
     ],
 
     /*

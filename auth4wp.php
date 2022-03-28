@@ -159,6 +159,8 @@ function shortcode_common(){
 		const base_url             = '<?= get_site_url() ?>';
 		const register_login       = '<?= $config['redirections']['login'] ?>'
 		const register_redirection = '<?= $config['redirections']['register'] ?>'
+		const password_changed_redirection = '<?= $config['redirections']['password_changed'] ?? null ?>'
+		
 
 		function parseJSON(str, default_val = null) {
 			try {

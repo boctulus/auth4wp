@@ -564,7 +564,6 @@ function patch_me(WP_REST_Request $req){
 
         $pass = $data['password'];
 
-        // not working
         wp_set_password($pass, $payload->uid);
 
         $res = [
@@ -610,9 +609,9 @@ function rememberme(WP_REST_Request $req)
          // envio del link al correo
         if (!empty($u)){           
             $email_token = Auth::gen_jwt_rememberme($u->ID);
-            $base_url = get_site_url();
 
-            $link = "$base_url/wp-json/auth/v1/change_pass_by_link/$email_token";
+            // cambiado 28-marzo 11:56
+            $link = "{$config['url_pages']['rememberme_change_pass']}?token=$email_token";
 
             $email_body = "Hola!
             <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
@@ -704,6 +703,29 @@ function change_pass_by_link(WP_REST_Request $req){
             'uid' => $uid
         ];
 
+        ///
+
+        $data = $req->get_body();
+
+        if ($data === null) {
+            throw new \Exception("No data");
+        }
+
+        $data = Url::bodyDecode($data);
+
+        if (!isset($data['password'])){
+            $error = new WP_Error();
+
+            $error->add(400, 'Password is required');
+            return $error;
+        }
+
+        $pass = $data['password'];
+
+        wp_set_password($pass, $payload->uid);
+
+        $res['message'] = 'Successful password change';
+
         $res = new WP_REST_Response($res);
         $res->set_status(200);
 
@@ -758,15 +780,8 @@ add_action('rest_api_init', function () {
     ));
 
     register_rest_route('auth/v1', '/change_pass_by_link/(?P<token>[a-zA-Z0-9._\-]+)', array(
-        'methods' => 'GET',
+        'methods' => 'POST',
         'callback' => 'change_pass_by_link',
         'permission_callback' => '__return_true'
     ));
-
-    // register_rest_route('auth/v1', '/change_pass_process', array(
-    //     'methods' => 'POST',
-    //     'callback' => 'change_pass_process',
-    //     'permission_callback' => '__return_true'
-    // ));
-
 });
