@@ -27,6 +27,7 @@
 /* 
     Securitized endpoints F
 */
+
 $endpoints = [
     [
         "slug" => "/wp-json/quote/v1/dollar",
@@ -73,8 +74,9 @@ $jwt = [
 // Comentar esta línea sino desea forzar huso horario
 $date_timezone = 'America/Bogota';
 
-// Sete esta variable si desea redirección luego del login
-$login_redirection = get_site_url();
+// Sete esta variable si desea redirección luego del login, register
+$login_redirection     = get_site_url();
+$register_redirection  = get_site_url();
 
 /*
     Por favor si desea usar los [shortcodes] registre aquí las urls de cada página en WordPress
@@ -86,7 +88,6 @@ $url_pages = [
     'register'   => 'index.php/registro',
     'rememberme' => 'index.php/recordar-contrasena'
 ];
-
 
 /*
     Mail configuration
