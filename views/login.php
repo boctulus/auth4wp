@@ -26,7 +26,7 @@
 	</div>
 
 	<div class="mt-3" style="text-align:right;">
-		No registrado? <a href="<?= $url_pages['register'] ?>">Regístrese</a>
+		No registrado? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
 	</div>
 </div>
 		

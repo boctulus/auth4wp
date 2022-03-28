@@ -1,7 +1,7 @@
 <!-- Sign up -->
 
 <?php
-	global $url_pages;
+	global $config;
 ?>
 
 <div>
@@ -18,7 +18,7 @@
 	<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="passwordconfirmation" placeholder="Password confirmación" required="required" name="passwordconfirmation"></input></div>
 	
 	<div style="margin-bottom:1em;">
-		<a href="<?= $url_pages['rememberme'] ?>">Recordar contraseña</a>
+		<a href="<?= $config['url_pages']['rememberme'] ?>">Recordar contraseña</a>
 	</div>
 
 	<div class="form-group">
@@ -26,7 +26,7 @@
 	</div>
 
 	<div class="mt-3" style="text-align:right;">
-		Ya registrado? <a href="<?= $url_pages['login'] ?>">Ingrese</a>
+		Ya registrado? <a href="<?= $config['url_pages']['login'] ?>">Ingrese</a>
 	</div>
 
 	<div id="error_box">
@@ -81,7 +81,7 @@
 				localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
 				console.log('Tokens obtenidos');
 
-				if (typeof register_redirection != 'undefined' && register_redirection !== null){
+				if (typeof register_redirection != 'undefined' && register_redirection!== null){
 					window.location = register_redirection;
 				}
 				

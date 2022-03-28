@@ -13,6 +13,6 @@
         <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
     </div>
 
-    No tiene cuenta? <a href="<?= $url_pages['register']  ?>">Regístrese</a>
+    No tiene cuenta? <a href="<?= $config['url_pages']['register'] ?>">Regístrese</a>
 </div>
 

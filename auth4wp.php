@@ -49,7 +49,6 @@ require __DIR__ . '/config.php';
 // New table
 require_once 'installer.php';
 
-
 if (!function_exists('dd')){
 	function dd($val, $msg = null, $pre_cond = null){
 		Debug::dd($val, $msg, $pre_cond);
@@ -80,6 +79,8 @@ add_action( 'wp_enqueue_scripts', 'boctulus\Auth4WP\enqueues');
 
 
 function shortcode_common(){
+	global $config;
+
 	?>
 	<style>
 		.login-form {
@@ -152,9 +153,9 @@ function shortcode_common(){
 	</style>
 
 	<script>		
-		const base_url = '<?= get_site_url() ?>';
-		//const register_redirection = ''
-
+		const base_url             = '<?= get_site_url() ?>';
+		const register_login       = '<?= $config['redirections']['login'] ?>'
+		const register_redirection = '<?= $config['redirections']['register'] ?>'
 
 		function parseJSON(str, default_val = null) {
 			try {
@@ -346,8 +347,8 @@ add_shortcode('uth4wp_rememberme', 'boctulus\Auth4WP\uth4wp_rememberme');
 // }
 
 
-if (isset($date_timezone)){
-	date_default_timezone_set($date_timezone);
+if (isset($config['date_timezone'])){
+	date_default_timezone_set($config['date_timezone']);
 }
 
 
@@ -385,10 +386,10 @@ if (isset($date_timezone)){
 /*
 	Completo urls 
 */
-// foreach ($url_pages as $ix => $page){
-// 	$pages[$ix] = trim($page, '/');
+foreach ($config['url_pages'] as $key => $page){
+	$config['url_pages'][$key] = trim($page, '/');
 
-// 	if (!Strings::startsWith('http', $pages[$ix])){
-// 		$pages[$ix] = get_site_url() . '/' . $pages[$ix];
-// 	} 
-// }
+	if (!Strings::startsWith('http', $config['url_pages'][$key])){
+		$config['url_pages'][$key] = get_site_url() . '/' . $config['url_pages'][$key];
+	} 
+}

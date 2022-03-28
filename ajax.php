@@ -24,7 +24,9 @@ use boctulus\Auth4WP\libs\System;
 */
 
 add_filter( 'rest_authentication_errors', function( $result ) {
-    global $jwt, $endpoints;
+    global $config;
+
+    $jwt = $config['jwt'];
 
     $headers          = apache_request_headers();
     $current_endpoint = $_SERVER["REQUEST_URI"];

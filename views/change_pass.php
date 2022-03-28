@@ -21,7 +21,7 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="login()">Login</button>
 	</div>
 
-	Recordó su password? <a href="<?= $url_pages['login'] ?>">Ingrese</a>
+	Recordó su password? <a href="<?= $config['url_pages']['login'] ?>">Ingrese</a>
 </div>
 		
 	
