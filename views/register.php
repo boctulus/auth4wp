@@ -47,33 +47,21 @@
 			return;
 		}else jQuery('#registerError').text('');
 		
-		obj['email']    = encodeURIComponent(jQuery('#email').val());
-		obj['username'] = encodeURIComponent(jQuery('#username').val());
-		obj['password'] = encodeURIComponent(jQuery('#password').val());
+		obj['email']    = jQuery('#email').val();
+		obj['username'] = jQuery('#username').val();
+		obj['password'] = jQuery('#password').val();
 
-		var formBody = [];
+		const url = base_url + '/wp-json/auth/v1/register';
 
-		for (var property in obj) {
-			var encodedKey = encodeURIComponent(property);
-			var encodedValue = encodeURIComponent(obj[property]);
-			formBody.push(encodedKey + "=" + encodedValue);
-		}
-
-		formBody = formBody.join("&");
-
-		fetch(base_url + '/wp-json/auth/v1/register', {
-			method: 'POST',
+		axios
+		.post(url, obj, {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+			Accept: "application/json",
+			"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 			},
-			body: formBody
 		})
-		.then(function(response) {
-			return response.json();
-		})
-		.then(function(data) {
-			//console.log(data);
-
+		.then(({data}) => {
+			console.log(data);
 			if (typeof data.access_token != 'undefined' && typeof data.refresh_token != 'undefined'){
 				localStorage.setItem('access_token',data.access_token);
 				localStorage.setItem('refresh_token',data.refresh_token);
@@ -89,12 +77,27 @@
 				console.log('Error (success)',data);	
 				jQuery('#loginError').text(data.responseJSON.error);
 			}
-
 		})
-		.catch(e => {
-			console.log(e);
+		.catch(function (error) {
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				console.log(error.response.data);  ///  <--- mensaje de error
+				console.log(error.response.status);
+				console.log(error.response.headers);
+			} else if (error.request) {
+				// The request was made but no response was received
+				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+				// http.ClientRequest in node.js
+				console.log(error.request);
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.log('Error', error.message);
+			}
+
+			console.log(error.config);
 		});
-		
+
 		return false;
 	}
 </script>

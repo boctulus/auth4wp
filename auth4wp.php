@@ -64,6 +64,9 @@ if (!function_exists('here')){
 function enqueues() 
 {  
 	//if (!is_home()){
+		wp_register_script('axios', Files::get_rel_path(). 'assets/js/axios.js');
+		wp_enqueue_script('axios');
+
 		wp_register_script('bootstrap', Files::get_rel_path(). 'assets/js/bootstrap/bootstrap.bundle.min.js');
 		wp_enqueue_script('bootstrap');
 
