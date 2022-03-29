@@ -1,7 +1,7 @@
 <?php
 
 /*
-    @author  Pablo Bozzolo boctulus@gmail.com
+    @author Pablo Bozzolo boctulus@gmail.com
 */
 
 namespace boctulus\Auth4WP\libs;

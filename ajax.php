@@ -642,23 +642,14 @@ function rememberme(WP_REST_Request $req)
         $ok = $wpdb->insert($wpdb->prefix . 'enqueued_mails', $data, array( '%s', '%s' ));
 
         if (!$ok){
-            // $error->add(400, $wpdb->show_errors());
-            // return $error;
-
-            // dd($wpdb->last_error);
-            // dd($wpdb->show_errors());
-            // exit;
+            $error->add(400, $wpdb->last_error);
+            return $error;
         }
 
         $res = [
-            'message' => 'Recibirás un correo con un enlace',
-            'degug' => [
-                'data'  => $data,
-                //'error' => $wpdb->show_errors()
-            ]
+            'message' => 'Recibirás un correo con un enlace'
         ];
         
-
         $res = new WP_REST_Response($res);
         $res->set_status(200);
 

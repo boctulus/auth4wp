@@ -40,9 +40,7 @@ class Mails
     }
 
     static function silentDebug($level = null){
-        global $simple_mail;
-
-        $config['email'] = $simple_mail;
+        global $config;
 
         $options = $config['email']['mailers'][ $config['email']['mailer_default'] ];
 
@@ -76,9 +74,7 @@ class Mails
     */
     static function sendMail(string $to_email, string $to_name = '', $subject = '', $body = '', $alt_body = null, $attachments = null, $from_email = null, $from_name = null, $cc = null, $bcc  = null)
     {
-		global $simple_mail;
-
-        $config['email'] = $simple_mail;
+		global $config;
 
         if (empty($subject)){
             throw new \Exception("Subject is required");
