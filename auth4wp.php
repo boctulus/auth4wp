@@ -391,37 +391,6 @@ if (isset($config['date_timezone'])){
 }
 
 
-// add_action( 'init', function () {
-// 	if ( ! wp_next_scheduled( 'do_single_action' ) ) {
-// 		wp_schedule_single_event( time() + 1, 'do_single_action' );
-// 	}
-
-// 	add_action( 'do_single_action', 'boctulus\Auth4WP\do_this_once' );
-
-// 	/*
-// 		Envio de correos
-// 	*/
-// 	function do_this_once() {
-// 		global $wpdb;
-
-// 		try {
-// 			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}enqueued_mails ORDER BY id DESC LIMIT 10", ARRAY_A);
-
-// 			foreach ($results as $r){
-// 				$args = json_decode($r['data'], true);
-// 				$wpdb->delete("{$wpdb->prefix}enqueued_mails", array( 'id' => $r['id'] ) );
-			
-// 				Mails::sendMail(...$args);
-// 				sleep(2);
-// 			}
-// 		} catch (\Exception $e){
-// 			Files::logger($e->getMessage());
-// 		}
-
-// 	}
-// } );   
-
-
 /*
 	Completo urls 
 */
@@ -432,3 +401,5 @@ foreach ($config['url_pages'] as $key => $page){
 		$config['url_pages'][$key] = get_site_url() . '/' . $config['url_pages'][$key];
 	} 
 }
+
+

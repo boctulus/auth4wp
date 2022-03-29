@@ -129,7 +129,9 @@ $config = [
         ],
     
         'mailer_default' => 'smtp'
-    ]
+    ],
+
+    'sent_email_in_background' => true
 ];
 
 

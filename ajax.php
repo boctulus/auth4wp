@@ -229,13 +229,8 @@ function login(WP_REST_Request $req)
         }
 
         $data = Url::bodyDecode($data);
-        
-        // $lang = $req->get_param('lang');
 
         $error = new WP_Error();
-
-        // echo 'HEADERS: '; 
-        // var_dump(apache_request_headers()); ///
 
         if (!isset($data['username']) && !isset($data['email'])) {
             $error->add(400, 'Campos username o email son requeridos');
@@ -621,6 +616,9 @@ function rememberme(WP_REST_Request $req)
 
         $link = "{$config['url_pages']['rememberme_change_pass']}?token=$email_token";
 
+        /*
+            "Template" de correo
+        */
         $email_body = "Hola!
         <p/>Para re-establecer la password siga el <a href=\"$link\">enlace</a></p>";
 
@@ -644,6 +642,10 @@ function rememberme(WP_REST_Request $req)
         if (!$ok){
             $error->add(400, $wpdb->last_error);
             return $error;
+        }
+
+        if ($config['sent_email_in_background']){
+            $ok = System::runInBackground("php ". __DIR__ . "/email_cron.php");            
         }
 
         $res = [

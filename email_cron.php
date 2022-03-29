@@ -32,6 +32,12 @@ global $wpdb;
 
 $cli = (php_sapi_name() == 'cli');
 
+/*
+	Delay inicial
+*/
+
+sleep(2);
+
 if ($cli){
 	$go = true;
 } else {
@@ -60,7 +66,7 @@ if ($go){
 
 		try {
 			Mails::debug(4);
-			//Mails::silentDebug();
+			Mails::silentDebug();
 			
 			Mails::sendMail(...$args);
 

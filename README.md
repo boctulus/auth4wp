@@ -26,16 +26,21 @@ define('MAIL_DEFAULT_FROM_ADDR', 'xxxxxxxxx@gmail.com');
 define('MAIL_DEFAULT_FROM_NAME', 'No responder');
 
 
-El envio de correos debería ser asíncrono para no dejar colgada la petición y por tanto Ud. debe configurar un CRONJOB en el servidor.
+El envio de correos debería ser asíncrono para no dejar colgada la petición y se implementó de hecho una solución async que *no* requiere de ningún tipo de cron job. Sin embargo si prefiere usar un crob job puede hacerlo y los pasos serían:
 
+1) Desactivar (poner el false)
 
-Tiene dos posibilidades:
+    'sent_email_in_background' => true
 
-1) Hacer un request a http://su-sitio.com?send_emails=1
-
-2) Programar el cron para que ejecute:
+2) Configurar un crontab hacia
 
     php php {ruta-al-wordpress}/wp-content/plugins/auth4wp/email_cron.php
+
+o ...
+
+Para que haga un request a http://su-sitio.com?send_emails=1
+
+De todas formas, considero que la implementación async es más ventajosa porque el usuario no debe esperar a que pase el cronjob lo que implica esperar al menos 1 minuto (que es el mínimo configurable). 
 
 
 Claves para el cifrado de tokens
@@ -157,9 +162,15 @@ Ej:
     ];
 
 
-Curiosamente por un bug en el core de WP, solo funciona si se accede a la ruta por http y no por https *excepto* que el verbo aplicado a la ruta sea POST (o al menos con GET no funciona bajo SSL).
+Se pedirá un token JWT el cual es el "access token" devuelto al registrarse o loguearse. El token tiene expiración. Si el token es incorrecto o es de un usuario sin los roles necesarios no se concederá el acceso.
 
-Se pedirá un token JWT el cual es el "access token" devuelto al registrarse o loguearse. El token tiene expiración.
+En la "demo" se securitizaron dos endpoints:
+
+    http://import-quoter.solucionbinaria.com/wp-json/wp/v2/media
+y
+    http://import-quoter.solucionbinaria.com/wp-json/cotizar/v1/dollar
+
+En ambos casos, las rutas son para GET.
 
 
 # Renovación de tokens
@@ -260,3 +271,30 @@ Finalmente para cambiar efectivamente la contraseña se hace uso del siguiente e
 	{
 		"password": "xxxxx"
 	}
+
+
+# Como consumir una API securitizada con este plugin
+
+Debe enviar en cada request ya sea de forma explícita o implícita (mediante "interceptors") el header "Authorization" tal y como se muestra en este ejemplo:
+
+    const url = '.....'
+
+    const data = {
+        ...
+        ...
+    }
+
+    axios
+    .post(url, data, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            Authorization: 'Bearer ' + token
+        },
+    })
+    .then(({
+        data
+    }) => {
+        console.log(data);
+        // ....
+    })
