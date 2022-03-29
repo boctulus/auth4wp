@@ -33,9 +33,10 @@ $config = [
         [
             "slug" => "/wp-json/quote/v1/dollar",
             "roles" => [
-                // 'author',
-                // "editor", 
-                //"customer",
+                "subscriber",
+                "author",
+                "editor", 
+                "customer",
                 "administrator"
             ]
         ],
@@ -43,6 +44,7 @@ $config = [
         [
             "slug" => "/wp-json/wp/v2/media",
             "roles" => [
+                "subscriber",
                 "editor",
                 "administrator"
             ]
@@ -86,10 +88,19 @@ $config = [
         a fin de poder navegar entre ellos.
     */
     'url_pages' => [
+        // [auth4wp_login]
         'login'      => 'index.php/login',
+
+        // [auth4wp_registration]
         'register'   => 'index.php/registro',
+        
+        // [auth4wp_rememberme]
         'rememberme' => 'index.php/recordar-contrasena',
+        
+        // [auth4wp_rememberme_mail_sent]
         //'rememberme_mail_sent' => 'index.php/recordar-contrasena-correo-enviado',
+        
+        // [auth4wp_rememberme_change_pass]
         'rememberme_change_pass' => 'index.php/recordar-contrasena-cambiar-pass'
     ]
 ];

@@ -57,7 +57,12 @@ define('TOKENS_EMAIL_SECRET_KEY','ZTbD:||:"%;(]]I{Q[*Q"[}=J`.~z#j*.-Vt"]*!~>#k}`
 
 ### Shortcode
 
-Los shortcodes son [auth4wp_login], [auth4wp_registration], [auth4wp_rememberme] y [recordar-contrasena-cambiar-pass]
+Los shortcodes son:
+
+    [auth4wp_login], 
+    [auth4wp_registration], 
+    [auth4wp_rememberme] y 
+    [auth4wp_rememberme_change_pass]
 
 Si desea usar los [shortcodes] debe registar las urls de cada página en WordPress en el config.php a fin de poder navegar entre ellos.
 

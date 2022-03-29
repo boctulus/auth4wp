@@ -61,7 +61,7 @@ if (!function_exists('here')){
 	}
 }
 
-function enqueues() 
+function my_enqueues() 
 {  
 	//if (!is_home()){
 		wp_register_script('axios', Files::get_rel_path(). 'assets/js/axios.js');
@@ -75,10 +75,13 @@ function enqueues()
 
 		wp_register_style('main', Files::get_rel_path() . 'assets/css/main.css');
 		wp_enqueue_style('main');
+
+		wp_register_style('fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
+		wp_enqueue_style('fa');
 	//}
 }
 
-add_action( 'wp_enqueue_scripts', 'boctulus\Auth4WP\enqueues');
+add_action( 'wp_enqueue_scripts', 'boctulus\Auth4WP\my_enqueues');
 
 
 function shortcode_common(){
@@ -88,6 +91,7 @@ function shortcode_common(){
 	<style>
 		#error_box {
 			font-size:115%;
+			text-align:left;
 		}
 
 		.login-form {
@@ -280,7 +284,7 @@ function shortcode_common(){
 }
 
 
-function uth4wp_login($atts = []) { 
+function auth4wp_login($atts = []) { 
 	if (empty($atts)){
 		$atts = [];
 	}
@@ -291,7 +295,7 @@ function uth4wp_login($atts = []) {
 	include __DIR__ . '/views/login.php';
 }
 
-function uth4wp_registration($atts = []) { 
+function auth4wp_registration($atts = []) { 
 	if (empty($atts)){
 		$atts = [];
 	}
@@ -302,7 +306,7 @@ function uth4wp_registration($atts = []) {
 	include __DIR__ . '/views/register.php';
 }
 
-function uth4wp_rememberme($atts = []) { 
+function auth4wp_rememberme($atts = []) { 
 	if (empty($atts)){
 		$atts = [];
 	}
@@ -314,7 +318,7 @@ function uth4wp_rememberme($atts = []) {
 }
 
 // No se utiliza de momento porque se muestra un alert.
-function uth4wp_rememberme_mail_sent($atts = []) { 
+function auth4wp_rememberme_mail_sent($atts = []) { 
 	if (empty($atts)){
 		$atts = [];
 	}
@@ -325,7 +329,7 @@ function uth4wp_rememberme_mail_sent($atts = []) {
 	include __DIR__ . '/views/rememberme_mail_sent.php';
 }
 
-function uth4wp_rememberme_change_pass($atts = []) { 
+function auth4wp_rememberme_change_pass($atts = []) { 
 	if (empty($atts)){
 		$atts = [];
 	}
@@ -338,10 +342,10 @@ function uth4wp_rememberme_change_pass($atts = []) {
 
 	
 // register shortcodes
-add_shortcode('uth4wp_login', 'boctulus\Auth4WP\uth4wp_login');
-add_shortcode('uth4wp_registration', 'boctulus\Auth4WP\uth4wp_registration');
-add_shortcode('uth4wp_rememberme', 'boctulus\Auth4WP\uth4wp_rememberme');
-add_shortcode('uth4wp_rememberme_change_pass', 'boctulus\Auth4WP\uth4wp_rememberme_change_pass');
+add_shortcode('auth4wp_login', 'boctulus\Auth4WP\auth4wp_login');
+add_shortcode('auth4wp_registration', 'boctulus\Auth4WP\auth4wp_registration');
+add_shortcode('auth4wp_rememberme', 'boctulus\Auth4WP\auth4wp_rememberme');
+add_shortcode('auth4wp_rememberme_change_pass', 'boctulus\Auth4WP\auth4wp_rememberme_change_pass');
 
 
 /*

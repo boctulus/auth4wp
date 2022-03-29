@@ -17,6 +17,7 @@ use boctulus\Auth4WP\libs\Auth;
 use boctulus\Auth4WP\libs\Url;
 use boctulus\Auth4WP\libs\Mails;
 use boctulus\Auth4WP\libs\System;
+use boctulus\Auth4WP\libs\Debug;
 
 /*
 	REST
@@ -25,7 +26,9 @@ use boctulus\Auth4WP\libs\System;
 
 add_filter( 'rest_authentication_errors', function( $result ) {
     global $config;
-    $jwt = $config['jwt'];
+    
+    $jwt       = $config['jwt'];
+    $endpoints = $config['endpoints'];
 
     $headers          = apache_request_headers();
     $current_endpoint = $_SERVER["REQUEST_URI"];
@@ -230,6 +233,9 @@ function login(WP_REST_Request $req)
         // $lang = $req->get_param('lang');
 
         $error = new WP_Error();
+
+        // echo 'HEADERS: '; 
+        // var_dump(apache_request_headers()); ///
 
         if (!isset($data['username']) && !isset($data['email'])) {
             $error->add(400, 'Campos username o email son requeridos');
