@@ -27,6 +27,7 @@ require_once __DIR__ . '/libs/Url.php';
 
 require __DIR__ . '/config.php';
 
+// ...
 
 global $wpdb;
 
@@ -36,7 +37,7 @@ $cli = (php_sapi_name() == 'cli');
 	Delay inicial
 */
 
-sleep(2);
+sleep(4);
 
 if ($cli){
 	$go = true;
@@ -54,6 +55,7 @@ if ($go){
 	foreach ($results as $r){
 		$args = json_decode($r['data'], true);
 
+		// lock
 		$wpdb->update("{$wpdb->prefix}enqueued_mails", 
 			[
 				'locked_at' => (new \DateTime("NOW"))->format('Y-m-d H:i:s')
@@ -83,6 +85,17 @@ if ($go){
 			if ($cli){
 				dd($e->getMessage());
 			}
+
+			// unlock
+			$wpdb->update("{$wpdb->prefix}enqueued_mails", 
+			[
+				'locked_at' => '0000-00-00 00:00:00'
+			],
+
+			[ 
+				'id' => $r['id'] 
+			]
+	 	);
 
 			Files::logger($e->getMessage());
 			exit;

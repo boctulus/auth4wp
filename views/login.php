@@ -7,7 +7,12 @@ global $config;
 <div class="container">
 	<div class="row">
 		<div class="col-lg-8 offset-lg-2 mt-3 text-end">
-			<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-at"></i></span><input class="form-control" type="text" id="email_username" placeholder="email o username" required="required"></input></div>
+			<div class="input-group mb-3">
+				<span class="input-group-text">
+					<i class="fas fa-at"></i>
+				</span>
+				<input class="form-control" type="text" id="email_username" placeholder="email o username" required="required"></input>
+			</div>
 
 			<div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-key"></i></span><input class="form-control" type="password" id="password" placeholder="Password" required="required"></input><span class="input-group-text" onclick="password_show_hide();">
 					<i class="fas fa-eye" id="show_eye"></i>

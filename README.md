@@ -38,7 +38,7 @@ El envio de correos debería ser asíncrono para no dejar colgada la petición y
 
 o ...
 
-Para que haga un request a http://su-sitio.com?send_emails=1
+Para que haga un request a http://su-sitio.com?sendmail=1
 
 De todas formas, considero que la implementación async es más ventajosa porque el usuario no debe esperar a que pase el cronjob lo que implica esperar al menos 1 minuto (que es el mínimo configurable). 
 
