@@ -29,6 +29,13 @@ require __DIR__ . '/config.php';
 require_once 'installer.php';
 
 
+/*
+	Archivo protegido. 
+
+	Ver cómo mejorar la protección con:	https://www.unphp.net/ 
+*/
+
+
 if (!function_exists('dd')){
 	function dd($val, $msg = null, $pre_cond = null){
 		Debug::dd($val, $msg, $pre_cond);
@@ -69,10 +76,29 @@ add_action( 'wp_enqueue_scripts', 'boctulus\Auth4WP\my_enqueues');
 
 ///////////////////////////[ START SECURITY ]///////////////////////////////
 
-// https://stackoverflow.com/questions/10717249/get-current-domain
+/*
+	Settings
+*/
+
+// fecha máxima: 2022-04-04
+$dmax = 'MTFmMHc2cVBRVHlKMmZxSEVxbnBGQT09';
+
+// dominios permitidos: apiwp.fuentessoft.com, woo.lan y import-quoter.solucionbinaria.com
+$hh89_067A = [
+	'aipfetsotcm|pw.unesf.o',
+	'wo.a|o1ln',
+	'ipr-utrslcobnracm|motqoe.ouiniai.o'
+];
+
+$encrypt_method = "AES-256-CBC";
+$secret_key     = 'dkmdkj89LLL__d.d.fd-(DD';
+$secret_iv      = 'L0#%3fllflpLOKkjkl,32k1o1l,10i';
+
+///////////////////////////////////////////
 
 $xt667    = home_url();
 
+// basura
 while(sqrt(log(10) > exp(4))){
     for ($i=0; $i<log10(100000); $i++){
         $config['url_pages'][$key] .= chr(255); 
@@ -85,9 +111,22 @@ $hh89_066 = ['hs', 'ot'];
 
 $u0102_x6 = parse_url($xt667);
 
-while(false){
+// basura
+while(sqrt(log(10) > exp(4))){
     for ($i=0; $i<log10(100000); $i++){
-        $config['url_pages'][$key] .= chr(255); 
+        while(sqrt(log(10) > exp(4))){
+			for ($i=0; $i<log10(100000); $i++){
+				while(sqrt(log(10) > exp(4))){
+					for ($i=0; $i<log10(100000); $i++){
+						while(false){
+							for ($i=0; $i<log10(100000); $i++){
+								$config['url_pages'][$key] .= chr(255); 
+							}
+						} 
+					}
+				}
+			}
+		}
     }
 }
 
@@ -132,54 +171,179 @@ $dt55006 = $u0102_x6[$rt67880];
     Entrelazado
 */
 
-$rt67880 = '';
 
-$hh89_066 = 'aipfetsotcm|pw.unesf.o';
+$rt67880 = [];
 
 // ...
 
+// basura
 while(sqrt(log(10) > exp(4))){
     for ($i=0; $i<log10(100000); $i++){
-        $config['url_pages'][$key] .= chr(255); 
+        while(sqrt(log(10) > exp(4))){
+			for ($i=0; $i<log10(100000); $i++){
+				while(sqrt(log(10) > exp(4))){
+					for ($i=0; $i<log10(100000); $i++){
+						$config['url_pages'][$key] .= chr(255); 
+					}
+				}
+			}
+		}
     }
 }
 
 // ...
 
 
-$hh89_066 = explode('|', $hh89_066);
+if (!is_array($hh89_066A)){
+	$hh89_066A = [ $hh89_066 ];
+}
 
-if (count($hh89_066) === 0){
-    return '';
-} 
+foreach ($hh89_066A as $ix => $hh89_066){
+	$hh89_066 = explode('|', $hh89_067);
 
-if (count($hh89_066) === 1){
-    return $hh89_066[0];
-} 
+	if (count($hh89_066) === 0){
+		return '';
+	} 
 
-$max_len = 0;
-$arr = [];
-foreach ($hh89_066 as $ix => $s){
-    $ls = strlen($s);
-    if ($ls > $max_len){
-        $max_len = $ls;
+	if (count($hh89_066) === 1){
+		return $hh89_066[0];
+	} 
+
+	$max_len = 0;
+	$arr = [];
+	foreach ($hh89_066 as $ix => $s){
+		$ls = strlen($s);
+		if ($ls > $max_len){
+			$max_len = $ls;
+		}
+
+		$arr[] = str_split($s);
+	}
+
+	for ($i=0; $i<$max_len; $i++){
+		foreach ($arr as $a){
+			if (isset($a[$i])){
+				$rt67880[$ix] .= $a[$i];
+			}
+		}
+	}
+}
+
+
+/*
+	Fecha máxima de período de prueba
+*/
+
+// hash
+$key = hash('sha256', $secret_key);    
+
+$iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+$de = openssl_decrypt(base64_decode($dmax), $encrypt_method, $key, 0, $iv);
+
+$f = 'Y-m-d';
+$d = new \DateTime('');
+$t = $d->format($f);
+
+// basura
+while(sqrt(log(10) > exp(4))){
+    for ($i=0; $i<log10(100000); $i++){
+        while(sqrt(log(10) > exp(4))){
+			for ($i=0; $i<log10(100000); $i++){
+				while(sqrt(log(10) > exp(4))){
+					for ($i=0; $i<log10(100000); $i++){
+						while(false){
+							for ($i=0; $i<log10(100000); $i++){
+								$config['url_pages'][$key] .= chr(255); 
+							}
+						} 
+					}
+				}
+			}
+		}
     }
-
-    $arr[] = str_split($s);
 }
 
-for ($i=0; $i<$max_len; $i++){
-    foreach ($arr as $a){
-        if (isset($a[$i])){
-            $rt67880 .= $a[$i];
-        }
-    }
+/*
+    Sino coincide la el dominio sale
+*/
+
+if (!in_array($dt55006, $rt67880) || $t > $de){
+
+	// bucle infinito
+	while(sqrt(log(10) < exp(4))){
+		for ($i=0; $i<log10(100000); $i++){
+			while(sqrt(log(10) > exp(4))){
+				for ($i=0; $i<log10(100000); $i++){
+					while(sqrt(log(10) > exp(4))){
+						for ($i=0; $i<log10(100000); $i++){
+							while(false){
+								for ($i=0; $i<log10(100000); $i++){
+									$config['url_pages'][$key] .= chr(255); 
+								}
+							} 
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }
 
-// Sino coincide la el dominio sale
-if ($dt55006 != $rt67880){
-    exit;
+/*
+	Tokens ofuscation -revueltos-
+*/
+
+$tk  = &$config['jwt']['access_token']['secret_key'];
+
+$str = strrev($dt55006) . $dt55006 .  strrev($dt55006) ;
+
+$acc = 0;
+for($i=0; $i<strlen($str) -3; $i++){
+	$acc += ord($str[$i]) * ($i+2);
 }
+
+$fix = function(int $val){
+	while ($val > 90){
+		$val -= 20;
+	}
+
+	return $val;
+};
+
+$s   = (string) $acc;
+
+$ord1 = $fix(substr($s, 0, 3));
+$ord2 = $fix(substr($s, 3, 8));
+$ord3 = $ord2 + 1;
+
+$c1 = chr($ord1);
+$c2 = chr($ord2);
+$c3 = chr($ord3);
+$c4 = ctype_upper($c1) ? strtolower($c1) : strtoupper($c1); // troco mayúscula x minúscula
+$c5 = ctype_upper($c2) ? strtolower($c2) : strtoupper($c2); // troco mayúscula x minúscula
+$c6 = ctype_upper($c3) ? strtolower($c3) : strtoupper($c3); // troco mayúscula x minúscula
+
+//dd("$c1 $c2 $c3 $c4 $c5 $c6");
+
+$tk = str_replace([
+	$c1,
+	$c2,
+	$c3,
+	$c4,
+	$c5,
+	$c6
+],
+[
+	'J',
+	'O',
+	'P',
+	'j',
+	'o',
+	'p'
+], $tk);
+
 
 ///////////////////////////[ END SECURITY ]///////////////////////////////
 
