@@ -14,6 +14,7 @@
 
 use boctulus\Auth4WP\libs\Mails;
 use boctulus\Auth4WP\libs\Url;
+use boctulus\Auth4WP\libs\Files;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', realpath(__DIR__ . '/../../..') . DIRECTORY_SEPARATOR);
@@ -23,9 +24,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/libs/Mails.php';
+require_once __DIR__ . '/libs/Files.php';
 require_once __DIR__ . '/libs/Url.php';
 
-require __DIR__ . '/config.php';
+require_once __DIR__ . '/config.php';
 
 // ...
 
