@@ -114,7 +114,7 @@ class Request
     /*  
         https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
     */
-    function acceptEncoding() : ?string {
+    function acceptEncoding() : string {
         if (static::$accept_encoding){
             return static::$accept_encoding;
         }

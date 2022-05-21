@@ -72,7 +72,7 @@ class JWK
      *
      * @uses createPemFromModulusAndExponent
      */
-    public static function parseKey(array $jwk): ?Key
+    public static function parseKey(array $jwk)
     {
         if (empty($jwk)) {
             throw new InvalidArgumentException('JWK must not be empty');

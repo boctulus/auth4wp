@@ -24,28 +24,52 @@
     que la data deba almacenarse en la base de datos !
 */
 
+/*
+    Las siguientes constantes podrían estar en el wp-config.php
+*/
+
+if (!defined('TOKENS_ACCSS_SECRET_KEY')){
+    define('TOKENS_ACCSS_SECRET_KEY', 'adf0000000000000010101');
+    define('TOKENS_REFSH_SECRET_KEY', 'blabla)@11........3333');
+    define('TOKENS_EMAIL_SECRET_KEY', ' dhdh994Alo3340303...3');
+}
+
+if (!defined('MAIL_HOST')){
+    define('MAIL_DRIVER', 'smtp');
+    define('MAIL_HOST','smtp.gmail.com');
+    define('MAIL_PORT', 587);
+    define('MAIL_USERNAME', 'xxxxxxxxx@gmail.com');
+    define('MAIL_PASSWORD', 'XXXXXXXXXXXXX');
+    define('MAIL_AUTH', true);
+    define('MAIL_ENCRYPTION', 'tls');
+
+    define('MAIL_DEFAULT_FROM_ADDR', 'xxxxxxxxx@gmail.com');
+    define('MAIL_DEFAULT_FROM_NAME', 'No responder');
+}
+
+
 /* 
-    Securitized endpoints F
+    Securitized endpoints
 */
 
 $config = [
     'endpoints' => [
-        [
-            "slug" => "/wp-json/quote/v1/dollar",
-            "roles" => [
-                "subscriber",
-                "author",
-                "editor", 
-                "customer",
-                "administrator"
-            ]
-        ],
-    
+
+        // Usar para ´testear´ el funcionamiento
         [
             "slug" => "/wp-json/wp/v2/media",
             "roles" => [
-                "subscriber",
-                "editor",
+                //"subscriber",
+                //"editor",
+                "repartidor",
+                "administrator"
+            ]
+        ],
+
+        [
+            "slug" => "/wp-json/despachos/v1/crear",
+            "roles" => [
+                "repartidor",
                 "administrator"
             ]
         ],
@@ -73,7 +97,7 @@ $config = [
         ],
     ],
 
-    // Comentar esta línea sino desea forzar huso horari
+    // Comentar esta línea sino desea forzar huso horario
     'date_timezone' => 'America/Bogota',
 
     // Setee esta variable si desea redirección luego del login, register

@@ -46,13 +46,17 @@ add_filter( 'rest_authentication_errors', function( $result ) {
                 continue;
             }
 
-            if (empty($auth)){
-                $error->add(401, "El header 'Authorization' con el token JWT es requerido");
+            if (empty($auth) && !isset($_GET['acccess_token'])){
+                $error->add(401, "El header 'Authorization' con el token JWT es requerido para {$endpoint['slug']}");
                 return $error;
             }
     
             try {
-                list($token) = sscanf($auth, 'Bearer %s');
+                if (!empty($auth)){
+                    list($token) = sscanf($auth, 'Bearer %s');
+                } else {
+                    $token = $_GET['acccess_token'];
+                }
     
                 /*
                     array (

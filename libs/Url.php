@@ -115,7 +115,7 @@ class Url
         return  $url_info['scheme'] . '://' . $url_info['host'];
     }
 
-    static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true)
+    static function consume_api(string $url, string $http_verb, $body = null, Array $headers = null, Array $options = null, $decode = true)
     {  
         if ($headers === null){
             $headers = [];

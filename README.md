@@ -183,9 +183,13 @@ Cómo se hace?
 
 Y se envia el refres_token en headers y sin body. Ej:
 
-Authorization: Bearer eyJ0eXAiOiJK.........
+    Authorization: Bearer eyJ0eXAiOiJK.........
 
-Se devolverá un nuevo acccess token en un JSON como este:
+O... via url
+
+    ?acccess_token=xxxxxxxxxxxxxxxxxx
+
+Entonces se devolverá un nuevo acccess token en un JSON como este:
 
     {
         "access_token": "eyJ0eXAiOiJK....4s",
